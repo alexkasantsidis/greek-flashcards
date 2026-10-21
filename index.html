@@ -1,0 +1,5065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101d2b">
+<title>Λεξιλόγιο — Greek Flashcards</title>
+<style>
+  :root{
+    --ink:#0d1926; --deep:#101d2b; --slate:#1b2f42; --line:#2c465e;
+    --marble:#f6f4ef; --paper:#fffdf8;
+    --aegean:#3fb8b0; --aegean-dim:#276f6d;
+    --coral:#e2725b; --sun:#e8b04b;
+    --muted:#8fa6bb; --muted-dim:#5c748c;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  [hidden]{display:none!important}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--deep);
+    background-image:radial-gradient(120% 60% at 50% -10%, #1b3247 0%, #101d2b 60%);
+    background-attachment:fixed;
+    color:var(--marble);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    min-height:100vh;min-height:100dvh;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:18px 16px 40px}
+
+  header{margin-bottom:16px}
+  h1{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+     font-size:29px;font-weight:600;letter-spacing:-.5px;margin:0;line-height:1}
+  .sub{margin-top:6px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-dim)}
+  .sub b{color:var(--aegean);font-weight:700}
+
+  .field{position:relative;margin-bottom:10px}
+  select{width:100%;appearance:none;-webkit-appearance:none;background:var(--slate);
+    color:var(--marble);border:1px solid var(--line);border-radius:13px;
+    padding:13px 40px 13px 14px;font-size:15px;font-family:inherit;font-weight:500}
+  .field::after{content:"";position:absolute;right:16px;top:50%;width:8px;height:8px;
+    border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);
+    transform:translateY(-70%) rotate(45deg);pointer-events:none}
+
+  .row{display:flex;gap:7px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+  .chip{background:var(--slate);color:var(--muted);border:1px solid var(--line);
+    border-radius:999px;padding:8px 12px;font-size:12px;font-weight:600;
+    font-family:inherit;cursor:pointer;letter-spacing:.2px}
+  .chip:active{transform:scale(.96)}
+  .chip.on{background:var(--aegean-dim);border-color:var(--aegean);color:#eafffb}
+  .chip.icon{padding:8px 11px;font-size:14px;line-height:1}
+  .chip .badge{display:inline-block;margin-left:5px;background:var(--aegean);color:#062b29;
+    border-radius:999px;padding:0 6px;font-size:10px;font-weight:800}
+  .spacer{flex:1}
+
+  /* filter panel */
+  .panelbox{background:var(--slate);border:1px solid var(--line);border-radius:14px;
+    padding:12px 13px 5px;margin-bottom:12px}
+  .panelbox[hidden]{display:none}
+  .grp{margin-bottom:10px}
+  .grp h3{margin:0 0 6px;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;
+    color:var(--muted-dim);font-weight:700}
+  .tags{display:flex;flex-wrap:wrap;gap:6px}
+  .tag-btn{background:transparent;border:1px solid var(--line);color:var(--muted);
+    border-radius:8px;padding:6px 10px;font-size:12.5px;font-family:inherit;cursor:pointer}
+  .tag-btn.on{background:var(--aegean);border-color:var(--aegean);color:#062b29;font-weight:700}
+  .tag-btn .c{opacity:.6;font-size:11px;margin-left:4px}
+  .panelfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;
+    border-top:1px solid var(--line);padding:8px 0 5px;margin-top:2px}
+  .panelfoot span{font-size:11px;color:var(--muted-dim)}
+  .empty-note{font-size:12px;color:var(--muted);padding:4px 0 10px}
+
+  .strip{display:flex;gap:2px;height:5px;margin-bottom:6px;overflow:hidden;border-radius:3px}
+  .strip i{flex:1 1 0;min-width:1px;background:#24394d;border-radius:2px}
+  .strip i.s1{background:var(--sun)}
+  .strip i.s2{background:var(--aegean)}
+  .strip i.cur{background:var(--marble)}
+  .meta{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.8px;
+    text-transform:uppercase;color:var(--muted-dim);margin-bottom:12px}
+
+  /* card */
+  .card{background:var(--paper);color:var(--ink);border-radius:20px;padding:22px 20px 20px;
+    box-shadow:0 14px 34px rgba(0,0,0,.42);margin-bottom:12px}
+  .cue{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:#a39684;
+    text-align:center;margin-bottom:12px}
+  .prompt{font-size:clamp(21px,6.2vw,27px);font-weight:600;text-align:center;line-height:1.3;
+    overflow-wrap:anywhere}
+  .answer{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:clamp(23px,6.6vw,31px);font-weight:600;text-align:center;line-height:1.3;
+    margin-top:14px;color:#14514e;overflow-wrap:anywhere}
+  .answer.hidden-drill{color:#c9bfae;letter-spacing:5px}
+  .cardnote{margin-top:10px;font-size:12.5px;line-height:1.55;color:#8a7c68;text-align:center;
+    overflow-wrap:anywhere}
+
+  .inputrow{display:flex;gap:8px;margin-top:16px}
+  input[type=text]{flex:1;min-width:0;background:#f0ece2;border:1.5px solid #ddd4c4;
+    border-radius:12px;padding:14px 13px;font-size:18px;font-family:"Iowan Old Style",Palatino,Georgia,serif;
+    color:var(--ink)}
+  input[type=text]:focus{outline:none;border-color:var(--aegean);background:#fff}
+  input[type=text].bad{border-color:var(--coral);background:#fbeae6}
+  .eye{flex:none;width:50px;background:#efe9dd;border:1.5px solid #ddd4c4;border-radius:12px;
+    cursor:pointer;color:#8a7c68;display:flex;align-items:center;justify-content:center}
+  .eye:active{background:#e3dccd}
+  .eye svg{width:22px;height:22px}
+  .go{width:100%;margin-top:9px;background:var(--aegean-dim);color:#eafffb;border:none;
+    border-radius:12px;padding:14px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer}
+  .go:active{transform:scale(.985)}
+
+  .verdict{margin-top:13px;border-radius:12px;padding:11px 13px;font-size:13.5px;line-height:1.5}
+  .verdict.ok{background:#e2f4f1;color:#14514e;border:1px solid #a9ded7}
+  .verdict.part{background:#fcf1dc;color:#7a5715;border:1px solid #ecd39a}
+  .verdict.no{background:#fbeae6;color:#8d3722;border:1px solid #eec2b7}
+  .verdict b{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-size:16px}
+  .drillcount{margin-top:11px;text-align:center;font-size:11px;letter-spacing:1.5px;
+    text-transform:uppercase;color:#a39684}
+  .pips{display:inline-flex;gap:5px;margin-left:7px;vertical-align:middle}
+  .pips i{width:8px;height:8px;border-radius:50%;background:#ddd4c4}
+  .pips i.done{background:var(--aegean)}
+
+  /* rating */
+  .rate{display:flex;gap:6px;margin-bottom:14px}
+  .rate button{flex:1;background:var(--slate);border:1px solid var(--line);color:var(--muted);
+    border-radius:11px;padding:10px 4px;font-size:11.5px;font-weight:600;font-family:inherit;
+    cursor:pointer;letter-spacing:.2px}
+  .rate button.on0{background:#3a2a2a;border-color:#7a5148;color:#e5b3a6}
+  .rate button.on1{background:#463a1e;border-color:var(--sun);color:#f4d79a}
+  .rate button.on2{background:var(--aegean-dim);border-color:var(--aegean);color:#bff3ec}
+  .reps{text-align:center;font-size:11px;color:var(--muted-dim);margin-bottom:14px;letter-spacing:.4px}
+
+  .acts{display:flex;gap:9px;margin-bottom:8px}
+  .nav{flex:none;width:50px;background:var(--slate);border:1px solid var(--line);color:var(--muted);
+    border-radius:13px;font-size:19px;font-family:inherit;cursor:pointer}
+  .nav:disabled{opacity:.3}
+  .btn{flex:1;border-radius:13px;border:1px solid var(--line);background:var(--slate);
+    color:var(--muted);padding:14px 8px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
+  .solid{background:var(--aegean);border-color:var(--aegean);color:#062b29}
+  .again{background:rgba(226,114,91,.16);border-color:rgba(226,114,91,.5);color:#f0a08e}
+  .card.tappable{cursor:pointer}
+
+  /* mode switch */
+  .seg{display:flex;background:var(--slate);border:1px solid var(--line);border-radius:999px;
+    padding:3px;margin-bottom:10px}
+  .seg button{flex:1;background:none;border:none;color:var(--muted);font-family:inherit;font-size:12.5px;
+    font-weight:600;padding:8px 4px;border-radius:999px;cursor:pointer;letter-spacing:.2px;white-space:nowrap}
+
+  /* lesson */
+  #lesson[hidden]{display:none}
+  .md{background:var(--paper);color:var(--ink);border-radius:20px;padding:20px 16px 8px;
+    box-shadow:0 14px 34px rgba(0,0,0,.42);margin-bottom:14px;font-size:15px;line-height:1.6}
+  .md h1{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-size:25px;
+    line-height:1.2;margin:0 0 10px;font-weight:600}
+  .md h2{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-size:19px;
+    margin:24px 0 8px;font-weight:600;color:#14514e}
+  .md h3{font-size:13px;letter-spacing:.3px;color:#8a7c68;margin:18px 0 6px;font-weight:700}
+  .md p{margin:0 0 12px}
+  .md ul,.md ol{margin:0 0 12px;padding-left:20px}
+  .md li{margin:3px 0}
+  .md strong{font-weight:700}
+  .md em{color:#6b604f}
+  .md hr{border:none;border-top:1px solid #e4ddcf;margin:18px 0}
+  .md blockquote{margin:0 0 12px;padding:9px 12px;background:#f3efe6;border-left:3px solid var(--aegean);
+    border-radius:0 10px 10px 0;font-size:14px}
+  .md code{background:#efe9dd;border-radius:4px;padding:0 4px;font-size:.92em}
+  .md .tbl{overflow-x:auto;margin:0 0 14px;-webkit-overflow-scrolling:touch}
+  .md table{border-collapse:collapse;font-size:14px;min-width:100%}
+  .md th,.md td{padding:6px 6px;border-bottom:1px solid #e4ddcf;text-align:left;white-space:nowrap}
+  .md th{font-size:12.5px;color:#8a7c68;font-weight:700}
+  .md td:first-child{color:#8a7c68;font-size:13px;white-space:normal;min-width:44px}
+  .md tbody tr:nth-child(odd){background:#faf7f0}
+  @media (max-width:420px){
+    .md table{font-size:13px}
+    .md th,.md td{padding:6px 4px}
+    .md th{font-size:12px}
+    .md td:first-child{font-size:12px;min-width:38px}
+  }
+  .md .st{display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:6px;vertical-align:middle}
+  .md .st1{background:var(--sun)}
+  .md .st2{background:var(--aegean)}
+  #startdrill{width:100%}
+  .seg button.on{background:var(--aegean-dim);color:#eafffb}
+
+  /* multiple choice */
+  .choices{display:grid;gap:8px;margin-top:16px}
+  .opt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+    background:#f3efe6;border:1.5px solid #ddd4c4;border-radius:12px;padding:12px 13px;
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-size:18px;
+    color:var(--ink);cursor:pointer;line-height:1.3;overflow-wrap:anywhere}
+  .opt .k{flex:none;width:22px;height:22px;border-radius:6px;background:#e4ddcf;color:#8a7c68;
+    font:700 11px/22px system-ui,sans-serif;text-align:center}
+  .opt:active:not(:disabled){transform:scale(.985)}
+  .opt:disabled{cursor:default}
+  .opt.right{background:#e2f4f1;border-color:var(--aegean);color:#14514e}
+  .opt.right .k{background:var(--aegean);color:#062b29}
+  .opt.wrong{background:#fbeae6;border-color:var(--coral);color:#8d3722}
+  .opt.wrong .k{background:var(--coral);color:#fff}
+  .opt.dim{opacity:.45}
+  .opt.en{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px}
+
+  .panel{background:var(--slate);border:1px solid var(--line);border-radius:20px;
+    padding:32px 22px;text-align:center;margin-bottom:16px}
+  .panel h2{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-size:24px;margin:0 0 6px;font-weight:600}
+  .panel p{margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.6}
+  .panel .n{color:var(--aegean);font-weight:700}
+  .stack{display:flex;flex-direction:column;gap:8px}
+
+  footer{margin-top:20px;padding-top:14px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .fnote{font-size:11px;color:var(--muted-dim);line-height:1.5}
+  .link{background:none;border:none;color:var(--muted-dim);font-family:inherit;font-size:11px;
+    text-decoration:underline;cursor:pointer;padding:6px 0;flex:none}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Λεξιλόγιο</h1>
+    <div class="sub"><b id="mastered">0</b> mastered · <span id="learningct">0</span> learning · <span id="grandtotal">0</span> cards</div>
+  </header>
+
+  <div class="field"><select id="section" aria-label="Choose a section"></select></div>
+
+  <div class="seg" id="mode" role="radiogroup" aria-label="Study mode">
+    <button data-mode="lesson" role="radio">📖 Lesson</button>
+    <button data-mode="type" role="radio">⌨ Type</button>
+    <button data-mode="choice" role="radio">☰ Choice</button>
+    <button data-mode="flip" role="radio">🂠 Flip</button>
+  </div>
+
+  <div class="row" id="drillrow">
+    <button class="chip" id="dir" hidden>GR → EN</button>
+    <button class="chip" id="hidemastered">Hide mastered</button>
+    <button class="chip" id="facets">Filters</button>
+    <span class="spacer"></span>
+    <button class="chip icon" id="shuffle" aria-label="Shuffle deck">⇄</button>
+    <button class="chip icon" id="restart" aria-label="Start over">↺</button>
+  </div>
+
+  <div class="panelbox" id="facetbox" hidden>
+    <div id="facetgroups"></div>
+    <div class="panelfoot">
+      <span id="facetsummary">Pick attributes to narrow the deck.</span>
+      <button class="link" id="clearfacets">Clear all</button>
+    </div>
+  </div>
+
+  <div class="strip" id="strip" aria-hidden="true"></div>
+  <div class="meta" id="metarow"><span id="pos">—</span><span id="sectionstat">—</span></div>
+
+  <div id="lesson" hidden>
+    <article class="md" id="lessonbody"></article>
+    <button class="btn solid" id="startdrill">Start drilling ›</button>
+  </div>
+
+  <div id="study">
+    <div class="card" id="cardbox">
+      <div class="cue" id="cue">type the greek</div>
+      <div class="prompt" id="prompt"></div>
+      <div class="answer" id="answer" hidden></div>
+      <div class="cardnote" id="cardnote" hidden></div>
+
+      <div class="choices" id="choices" hidden></div>
+
+      <div id="entry">
+        <div class="inputrow">
+          <input type="text" id="typed" autocomplete="off" autocorrect="off"
+                 autocapitalize="none" spellcheck="false" enterkeyhint="go"
+                 placeholder="γράψε εδώ…" aria-label="Type the Greek word">
+          <button class="eye" id="reveal" aria-label="Show me the word">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+        <button class="go" id="check">Check</button>
+        <div class="drillcount" id="drillcount" hidden></div>
+      </div>
+
+      <div class="verdict" id="verdict" hidden></div>
+    </div>
+
+    <div class="acts" id="flipacts" hidden>
+      <button class="btn again" id="fno">Didn't know</button>
+      <button class="btn solid" id="fyes">Knew it</button>
+    </div>
+
+    <div class="rate" id="rate">
+      <button data-s="0">○ Unlearned</button>
+      <button data-s="1">◐ Learning</button>
+      <button data-s="2">● Mastered</button>
+    </div>
+    <div class="reps" id="reps"></div>
+
+    <div class="acts">
+      <button class="nav" id="prev" aria-label="Previous card">‹</button>
+      <button class="btn" id="skip">Skip</button>
+      <button class="btn solid" id="next" hidden>Next card ›</button>
+    </div>
+  </div>
+
+  <div id="done" class="panel" hidden>
+    <h2 id="donetitle">Deck finished</h2>
+    <p id="donetext"></p>
+    <div class="stack">
+      <button class="btn solid" id="againdeck">Go through it again</button>
+      <button class="btn" id="drillmissed" hidden>Drill only what I missed</button>
+    </div>
+  </div>
+
+  <footer>
+    <span class="fnote">Progress saves in this browser.</span>
+    <button class="link" id="reset">Reset progress</button>
+  </footer>
+</div>
+
+<script>
+/* ===================== DATA ===================== */
+const DATA = {
+ "PERSONS": [
+  {
+   "gr": "εγώ",
+   "en": "I"
+  },
+  {
+   "gr": "εσύ",
+   "en": "you"
+  },
+  {
+   "gr": "αυτός/αυτή/αυτό",
+   "en": "he/she/it"
+  },
+  {
+   "gr": "εμείς",
+   "en": "we"
+  },
+  {
+   "gr": "εσείς",
+   "en": "you (pl.)"
+  },
+  {
+   "gr": "αυτοί/αυτές/αυτά",
+   "en": "they"
+  }
+ ],
+ "PAST_FUTURE_VERBS": [
+  {
+   "gr": "είμαι",
+   "enBase": "be",
+   "en3rd": "is",
+   "enPast": "was",
+   "enPresentForms": [
+    "am",
+    "are",
+    "is",
+    "are",
+    "are",
+    "are"
+   ],
+   "enPastForms": [
+    "was",
+    "were",
+    "was",
+    "were",
+    "were",
+    "were"
+   ],
+   "present": [
+    "είμαι",
+    "είσαι",
+    "είναι",
+    "είμαστε",
+    "είστε",
+    "είναι"
+   ],
+   "past": [
+    "ήμουν",
+    "ήσουν",
+    "ήταν",
+    "ήμασταν",
+    "ήσασταν",
+    "ήταν"
+   ],
+   "future": [
+    "θα είμαι",
+    "θα είσαι",
+    "θα είναι",
+    "θα είμαστε",
+    "θα είστε",
+    "θα είναι"
+   ]
+  },
+  {
+   "gr": "τρώω",
+   "enBase": "eat",
+   "en3rd": "eats",
+   "enPast": "ate",
+   "present": [
+    "τρώω",
+    "τρως",
+    "τρώει",
+    "τρώμε",
+    "τρώτε",
+    "τρώνε"
+   ],
+   "past": [
+    "έφαγα",
+    "έφαγες",
+    "έφαγε",
+    "φάγαμε",
+    "φάγατε",
+    "έφαγαν"
+   ],
+   "future": [
+    "θα φάω",
+    "θα φας",
+    "θα φάει",
+    "θα φάμε",
+    "θα φάτε",
+    "θα φάνε"
+   ]
+  },
+  {
+   "gr": "πίνω",
+   "enBase": "drink",
+   "en3rd": "drinks",
+   "enPast": "drank",
+   "present": [
+    "πίνω",
+    "πίνεις",
+    "πίνει",
+    "πίνουμε",
+    "πίνετε",
+    "πίνουν"
+   ],
+   "past": [
+    "ήπια",
+    "ήπιες",
+    "ήπιε",
+    "ήπιαμε",
+    "ήπιατε",
+    "ήπιαν"
+   ],
+   "future": [
+    "θα πιω",
+    "θα πιεις",
+    "θα πιει",
+    "θα πιούμε",
+    "θα πιείτε",
+    "θα πιουν"
+   ]
+  },
+  {
+   "gr": "πάω",
+   "enBase": "go",
+   "en3rd": "goes",
+   "enPast": "went",
+   "present": [
+    "πάω",
+    "πας",
+    "πάει",
+    "πάμε",
+    "πάτε",
+    "πάνε"
+   ],
+   "past": [
+    "πήγα",
+    "πήγες",
+    "πήγε",
+    "πήγαμε",
+    "πήγατε",
+    "πήγαν"
+   ],
+   "future": [
+    "θα πάω",
+    "θα πας",
+    "θα πάει",
+    "θα πάμε",
+    "θα πάτε",
+    "θα πάνε"
+   ]
+  },
+  {
+   "gr": "βλέπω",
+   "enBase": "see",
+   "en3rd": "sees",
+   "enPast": "saw",
+   "present": [
+    "βλέπω",
+    "βλέπεις",
+    "βλέπει",
+    "βλέπουμε",
+    "βλέπετε",
+    "βλέπουν"
+   ],
+   "past": [
+    "είδα",
+    "είδες",
+    "είδε",
+    "είδαμε",
+    "είδατε",
+    "είδαν"
+   ],
+   "future": [
+    "θα δω",
+    "θα δεις",
+    "θα δει",
+    "θα δούμε",
+    "θα δείτε",
+    "θα δουν"
+   ]
+  },
+  {
+   "gr": "λέω",
+   "enBase": "say",
+   "en3rd": "says",
+   "enPast": "said",
+   "present": [
+    "λέω",
+    "λες",
+    "λέει",
+    "λέμε",
+    "λέτε",
+    "λένε"
+   ],
+   "past": [
+    "είπα",
+    "είπες",
+    "είπε",
+    "είπαμε",
+    "είπατε",
+    "είπαν"
+   ],
+   "future": [
+    "θα πω",
+    "θα πεις",
+    "θα πει",
+    "θα πούμε",
+    "θα πείτε",
+    "θα πουν"
+   ]
+  },
+  {
+   "gr": "κάνω",
+   "enBase": "do / make",
+   "en3rd": "does / makes",
+   "enPast": "did / made",
+   "present": [
+    "κάνω",
+    "κάνεις",
+    "κάνει",
+    "κάνουμε",
+    "κάνετε",
+    "κάνουν"
+   ],
+   "past": [
+    "έκανα",
+    "έκανες",
+    "έκανε",
+    "κάναμε",
+    "κάνατε",
+    "έκαναν"
+   ],
+   "future": [
+    "θα κάνω",
+    "θα κάνεις",
+    "θα κάνει",
+    "θα κάνουμε",
+    "θα κάνετε",
+    "θα κάνουν"
+   ]
+  },
+  {
+   "gr": "έρχομαι",
+   "enBase": "come",
+   "en3rd": "comes",
+   "enPast": "came",
+   "present": [
+    "έρχομαι",
+    "έρχεσαι",
+    "έρχεται",
+    "ερχόμαστε",
+    "έρχεστε",
+    "έρχονται"
+   ],
+   "past": [
+    "ήρθα",
+    "ήρθες",
+    "ήρθε",
+    "ήρθαμε",
+    "ήρθατε",
+    "ήρθαν"
+   ],
+   "future": [
+    "θα έρθω",
+    "θα έρθεις",
+    "θα έρθει",
+    "θα έρθουμε",
+    "θα έρθετε",
+    "θα έρθουν"
+   ]
+  },
+  {
+   "gr": "βγαίνω",
+   "enBase": "go out",
+   "en3rd": "goes out",
+   "enPast": "went out",
+   "present": [
+    "βγαίνω",
+    "βγαίνεις",
+    "βγαίνει",
+    "βγαίνουμε",
+    "βγαίνετε",
+    "βγαίνουν"
+   ],
+   "past": [
+    "βγήκα",
+    "βγήκες",
+    "βγήκε",
+    "βγήκαμε",
+    "βγήκατε",
+    "βγήκαν"
+   ],
+   "future": [
+    "θα βγω",
+    "θα βγεις",
+    "θα βγει",
+    "θα βγούμε",
+    "θα βγείτε",
+    "θα βγουν"
+   ]
+  },
+  {
+   "gr": "φεύγω",
+   "enBase": "leave",
+   "en3rd": "leaves",
+   "enPast": "left",
+   "present": [
+    "φεύγω",
+    "φεύγεις",
+    "φεύγει",
+    "φεύγουμε",
+    "φεύγετε",
+    "φεύγουν"
+   ],
+   "past": [
+    "έφυγα",
+    "έφυγες",
+    "έφυγε",
+    "φύγαμε",
+    "φύγατε",
+    "έφυγαν"
+   ],
+   "future": [
+    "θα φύγω",
+    "θα φύγεις",
+    "θα φύγει",
+    "θα φύγουμε",
+    "θα φύγετε",
+    "θα φύγουν"
+   ]
+  },
+  {
+   "gr": "παίρνω",
+   "enBase": "take",
+   "en3rd": "takes",
+   "enPast": "took",
+   "present": [
+    "παίρνω",
+    "παίρνεις",
+    "παίρνει",
+    "παίρνουμε",
+    "παίρνετε",
+    "παίρνουν"
+   ],
+   "past": [
+    "πήρα",
+    "πήρες",
+    "πήρε",
+    "πήραμε",
+    "πήρατε",
+    "πήραν"
+   ],
+   "future": [
+    "θα πάρω",
+    "θα πάρεις",
+    "θα πάρει",
+    "θα πάρουμε",
+    "θα πάρετε",
+    "θα πάρουν"
+   ]
+  },
+  {
+   "gr": "δίνω",
+   "enBase": "give",
+   "en3rd": "gives",
+   "enPast": "gave",
+   "present": [
+    "δίνω",
+    "δίνεις",
+    "δίνει",
+    "δίνουμε",
+    "δίνετε",
+    "δίνουν"
+   ],
+   "past": [
+    "έδωσα",
+    "έδωσες",
+    "έδωσε",
+    "δώσαμε",
+    "δώσατε",
+    "έδωσαν"
+   ],
+   "future": [
+    "θα δώσω",
+    "θα δώσεις",
+    "θα δώσει",
+    "θα δώσουμε",
+    "θα δώσετε",
+    "θα δώσουν"
+   ]
+  },
+  {
+   "gr": "βρίσκω",
+   "enBase": "find",
+   "en3rd": "finds",
+   "enPast": "found",
+   "present": [
+    "βρίσκω",
+    "βρίσκεις",
+    "βρίσκει",
+    "βρίσκουμε",
+    "βρίσκετε",
+    "βρίσκουν"
+   ],
+   "past": [
+    "βρήκα",
+    "βρήκες",
+    "βρήκε",
+    "βρήκαμε",
+    "βρήκατε",
+    "βρήκαν"
+   ],
+   "future": [
+    "θα βρω",
+    "θα βρεις",
+    "θα βρει",
+    "θα βρούμε",
+    "θα βρείτε",
+    "θα βρουν"
+   ]
+  },
+  {
+   "gr": "μπαίνω",
+   "enBase": "enter",
+   "en3rd": "enters",
+   "enPast": "entered",
+   "present": [
+    "μπαίνω",
+    "μπαίνεις",
+    "μπαίνει",
+    "μπαίνουμε",
+    "μπαίνετε",
+    "μπαίνουν"
+   ],
+   "past": [
+    "μπήκα",
+    "μπήκες",
+    "μπήκε",
+    "μπήκαμε",
+    "μπήκατε",
+    "μπήκαν"
+   ],
+   "future": [
+    "θα μπω",
+    "θα μπεις",
+    "θα μπει",
+    "θα μπούμε",
+    "θα μπείτε",
+    "θα μπουν"
+   ]
+  },
+  {
+   "gr": "γίνομαι",
+   "enBase": "become",
+   "en3rd": "becomes",
+   "enPast": "became",
+   "present": [
+    "γίνομαι",
+    "γίνεσαι",
+    "γίνεται",
+    "γινόμαστε",
+    "γίνεστε",
+    "γίνονται"
+   ],
+   "past": [
+    "έγινα",
+    "έγινες",
+    "έγινε",
+    "γίναμε",
+    "γίνατε",
+    "έγιναν"
+   ],
+   "future": [
+    "θα γίνω",
+    "θα γίνεις",
+    "θα γίνει",
+    "θα γίνουμε",
+    "θα γίνετε",
+    "θα γίνουν"
+   ]
+  },
+  {
+   "gr": "γράφω",
+   "enBase": "write",
+   "en3rd": "writes",
+   "enPast": "wrote",
+   "present": [
+    "γράφω",
+    "γράφεις",
+    "γράφει",
+    "γράφουμε",
+    "γράφετε",
+    "γράφουν"
+   ],
+   "past": [
+    "έγραψα",
+    "έγραψες",
+    "έγραψε",
+    "γράψαμε",
+    "γράψατε",
+    "έγραψαν"
+   ],
+   "future": [
+    "θα γράψω",
+    "θα γράψεις",
+    "θα γράψει",
+    "θα γράψουμε",
+    "θα γράψετε",
+    "θα γράψουν"
+   ]
+  },
+  {
+   "gr": "διαβάζω",
+   "enBase": "read / study",
+   "en3rd": "reads / studies",
+   "enPast": "read / studied",
+   "present": [
+    "διαβάζω",
+    "διαβάζεις",
+    "διαβάζει",
+    "διαβάζουμε",
+    "διαβάζετε",
+    "διαβάζουν"
+   ],
+   "past": [
+    "διάβασα",
+    "διάβασες",
+    "διάβασε",
+    "διαβάσαμε",
+    "διαβάσατε",
+    "διάβασαν"
+   ],
+   "future": [
+    "θα διαβάσω",
+    "θα διαβάσεις",
+    "θα διαβάσει",
+    "θα διαβάσουμε",
+    "θα διαβάσετε",
+    "θα διαβάσουν"
+   ]
+  },
+  {
+   "gr": "μιλάω",
+   "enBase": "speak",
+   "en3rd": "speaks",
+   "enPast": "spoke",
+   "present": [
+    "μιλάω",
+    "μιλάς",
+    "μιλάει",
+    "μιλάμε",
+    "μιλάτε",
+    "μιλάνε"
+   ],
+   "past": [
+    "μίλησα",
+    "μίλησες",
+    "μίλησε",
+    "μιλήσαμε",
+    "μιλήσατε",
+    "μίλησαν"
+   ],
+   "future": [
+    "θα μιλήσω",
+    "θα μιλήσεις",
+    "θα μιλήσει",
+    "θα μιλήσουμε",
+    "θα μιλήσετε",
+    "θα μιλήσουν"
+   ]
+  },
+  {
+   "gr": "ακούω",
+   "enBase": "hear",
+   "en3rd": "hears",
+   "enPast": "heard",
+   "present": [
+    "ακούω",
+    "ακούς",
+    "ακούει",
+    "ακούμε",
+    "ακούτε",
+    "ακούνε"
+   ],
+   "past": [
+    "άκουσα",
+    "άκουσες",
+    "άκουσε",
+    "ακούσαμε",
+    "ακούσατε",
+    "άκουσαν"
+   ],
+   "future": [
+    "θα ακούσω",
+    "θα ακούσεις",
+    "θα ακούσει",
+    "θα ακούσουμε",
+    "θα ακούσετε",
+    "θα ακούσουν"
+   ]
+  },
+  {
+   "gr": "αγοράζω",
+   "enBase": "buy",
+   "en3rd": "buys",
+   "enPast": "bought",
+   "present": [
+    "αγοράζω",
+    "αγοράζεις",
+    "αγοράζει",
+    "αγοράζουμε",
+    "αγοράζετε",
+    "αγοράζουν"
+   ],
+   "past": [
+    "αγόρασα",
+    "αγόρασες",
+    "αγόρασε",
+    "αγοράσαμε",
+    "αγοράσατε",
+    "αγόρασαν"
+   ],
+   "future": [
+    "θα αγοράσω",
+    "θα αγοράσεις",
+    "θα αγοράσει",
+    "θα αγοράσουμε",
+    "θα αγοράσετε",
+    "θα αγοράσουν"
+   ]
+  },
+  {
+   "gr": "ρωτάω",
+   "enBase": "ask",
+   "en3rd": "asks",
+   "enPast": "asked",
+   "present": [
+    "ρωτάω",
+    "ρωτάς",
+    "ρωτάει",
+    "ρωτάμε",
+    "ρωτάτε",
+    "ρωτάνε"
+   ],
+   "past": [
+    "ρώτησα",
+    "ρώτησες",
+    "ρώτησε",
+    "ρωτήσαμε",
+    "ρωτήσατε",
+    "ρώτησαν"
+   ],
+   "future": [
+    "θα ρωτήσω",
+    "θα ρωτήσεις",
+    "θα ρωτήσει",
+    "θα ρωτήσουμε",
+    "θα ρωτήσετε",
+    "θα ρωτήσουν"
+   ]
+  }
+ ],
+ "VOCAB_DB": {
+  "rooms": {
+   "label": "Rooms of the House",
+   "words": [
+    {
+     "gr": "το σπίτι",
+     "en": "house",
+     "note": "neuter"
+    },
+    {
+     "gr": "το δωμάτιο",
+     "en": "room",
+     "note": "neuter"
+    },
+    {
+     "gr": "η κουζίνα",
+     "en": "kitchen",
+     "note": "feminine"
+    },
+    {
+     "gr": "το σαλόνι",
+     "en": "living room",
+     "note": "neuter"
+    },
+    {
+     "gr": "η κρεβατοκάμαρα",
+     "en": "bedroom",
+     "note": "feminine"
+    },
+    {
+     "gr": "το μπάνιο",
+     "en": "bathroom",
+     "note": "neuter"
+    },
+    {
+     "gr": "η τραπεζαρία",
+     "en": "dining room",
+     "note": "feminine"
+    },
+    {
+     "gr": "η σκάλα",
+     "en": "staircase",
+     "note": "feminine"
+    },
+    {
+     "gr": "ο κήπος",
+     "en": "garden",
+     "note": "masculine"
+    },
+    {
+     "gr": "το μπαλκόνι",
+     "en": "balcony",
+     "note": "neuter"
+    }
+   ]
+  },
+  "furniture": {
+   "label": "Furniture",
+   "words": [
+    {
+     "gr": "το κρεβάτι",
+     "en": "bed",
+     "note": "neuter"
+    },
+    {
+     "gr": "το τραπέζι",
+     "en": "table",
+     "note": "neuter"
+    },
+    {
+     "gr": "η καρέκλα",
+     "en": "chair",
+     "note": "feminine"
+    },
+    {
+     "gr": "ο καναπές",
+     "en": "sofa / couch",
+     "note": "masculine"
+    },
+    {
+     "gr": "η ντουλάπα",
+     "en": "wardrobe / closet",
+     "note": "feminine"
+    },
+    {
+     "gr": "το ράφι",
+     "en": "shelf",
+     "note": "neuter"
+    },
+    {
+     "gr": "η βιβλιοθήκη",
+     "en": "bookcase / library",
+     "note": "feminine"
+    },
+    {
+     "gr": "ο καθρέφτης",
+     "en": "mirror",
+     "note": "masculine"
+    },
+    {
+     "gr": "το κομοδίνο",
+     "en": "nightstand",
+     "note": "neuter"
+    },
+    {
+     "gr": "το συρτάρι",
+     "en": "drawer",
+     "note": "neuter"
+    }
+   ]
+  },
+  "appliances": {
+   "label": "Appliances & Electronics",
+   "words": [
+    {
+     "gr": "το ψυγείο",
+     "en": "refrigerator",
+     "note": "neuter"
+    },
+    {
+     "gr": "ο φούρνος",
+     "en": "oven",
+     "note": "masculine"
+    },
+    {
+     "gr": "το πλυντήριο",
+     "en": "washing machine",
+     "note": "neuter"
+    },
+    {
+     "gr": "ο νεροχύτης",
+     "en": "sink",
+     "note": "masculine"
+    },
+    {
+     "gr": "η λάμπα",
+     "en": "lamp",
+     "note": "feminine"
+    },
+    {
+     "gr": "ο υπολογιστής",
+     "en": "computer",
+     "note": "masculine"
+    },
+    {
+     "gr": "η τηλεόραση",
+     "en": "television",
+     "note": "feminine"
+    },
+    {
+     "gr": "το κλιματιστικό",
+     "en": "air conditioner",
+     "note": "neuter"
+    }
+   ]
+  },
+  "household_items": {
+   "label": "Household Items & Textiles",
+   "words": [
+    {
+     "gr": "το χαλί",
+     "en": "rug / carpet",
+     "note": "neuter"
+    },
+    {
+     "gr": "η κουρτίνα",
+     "en": "curtain",
+     "note": "feminine"
+    },
+    {
+     "gr": "το μαξιλάρι",
+     "en": "pillow / cushion",
+     "note": "neuter"
+    },
+    {
+     "gr": "η κουβέρτα",
+     "en": "blanket",
+     "note": "feminine"
+    },
+    {
+     "gr": "το σεντόνι",
+     "en": "bedsheet",
+     "note": "neuter"
+    }
+   ]
+  },
+  "structure": {
+   "label": "Structural Parts",
+   "words": [
+    {
+     "gr": "το παράθυρο",
+     "en": "window",
+     "note": "neuter"
+    },
+    {
+     "gr": "η πόρτα",
+     "en": "door",
+     "note": "feminine"
+    },
+    {
+     "gr": "ο τοίχος",
+     "en": "wall",
+     "note": "masculine"
+    },
+    {
+     "gr": "το πάτωμα",
+     "en": "floor",
+     "note": "neuter"
+    },
+    {
+     "gr": "η οροφή / το ταβάνι",
+     "en": "ceiling",
+     "note": "feminine / neuter"
+    },
+    {
+     "gr": "το φως",
+     "en": "light",
+     "note": "neuter"
+    }
+   ]
+  },
+  "prepositions": {
+   "label": "Prepositions & Location Phrases",
+   "words": [
+    {
+     "gr": "πίσω από",
+     "en": "behind"
+    },
+    {
+     "gr": "μπροστά από",
+     "en": "in front of"
+    },
+    {
+     "gr": "μέσα σε(ν) / μέσα στο / στη(ν)",
+     "en": "inside"
+    },
+    {
+     "gr": "έξω από",
+     "en": "outside of"
+    },
+    {
+     "gr": "πάνω σε / πάνω στο / στη(ν)",
+     "en": "on top of / on"
+    },
+    {
+     "gr": "κάτω από",
+     "en": "under / below"
+    },
+    {
+     "gr": "δίπλα σε / δίπλα στο / στη(ν)",
+     "en": "next to / beside"
+    },
+    {
+     "gr": "ανάμεσα σε",
+     "en": "between / among"
+    },
+    {
+     "gr": "κοντά σε",
+     "en": "near / close to"
+    },
+    {
+     "gr": "μακριά από",
+     "en": "far from"
+    },
+    {
+     "gr": "απέναντι από",
+     "en": "across from / opposite"
+    },
+    {
+     "gr": "γύρω από",
+     "en": "around"
+    },
+    {
+     "gr": "με",
+     "en": "with"
+    },
+    {
+     "gr": "χωρίς",
+     "en": "without"
+    },
+    {
+     "gr": "για",
+     "en": "for"
+    }
+   ]
+  },
+  "z5": {
+   "label": "Z5 Vocabulary",
+   "words": [
+    {
+     "gr": "το δάσος",
+     "en": "forest",
+     "note": "neuter"
+    },
+    {
+     "gr": "το τρέξιμο",
+     "en": "running",
+     "note": "neuter"
+    },
+    {
+     "gr": "η λίμνη",
+     "en": "lake",
+     "note": "feminine"
+    },
+    {
+     "gr": "το πουλί (pl. τα πουλιά)",
+     "en": "bird (birds)",
+     "note": "neuter"
+    },
+    {
+     "gr": "προτείνω",
+     "en": "to suggest"
+    },
+    {
+     "gr": "προτιμώ",
+     "en": "to prefer"
+    },
+    {
+     "gr": "ήσυχα",
+     "en": "quietly"
+    },
+    {
+     "gr": "σιγά σιγά",
+     "en": "slowly / little by little"
+    },
+    {
+     "gr": "το ποδήλατο",
+     "en": "bicycle",
+     "note": "neuter"
+    },
+    {
+     "gr": "κάνω ποδήλατο",
+     "en": "to ride a bike"
+    },
+    {
+     "gr": "το δέντρο",
+     "en": "tree",
+     "note": "neuter"
+    },
+    {
+     "gr": "κουράζομαι",
+     "en": "to get tired"
+    },
+    {
+     "gr": "είμαι κουρασμένος/-η",
+     "en": "I am tired"
+    },
+    {
+     "gr": "ξεκουράζομαι",
+     "en": "to rest (oneself)",
+     "note": "reflexive"
+    },
+    {
+     "gr": "ξεκουράζω",
+     "en": "to rest (someone/something)",
+     "note": "transitive"
+    },
+    {
+     "gr": "γελάω",
+     "en": "to laugh"
+    },
+    {
+     "gr": "η ταινία",
+     "en": "movie / film",
+     "note": "feminine"
+    },
+    {
+     "gr": "μυρίζω",
+     "en": "to smell"
+    },
+    {
+     "gr": "ο κόσμος",
+     "en": "people / world",
+     "note": "masculine"
+    },
+    {
+     "gr": "το κολύμπι",
+     "en": "swimming",
+     "note": "neuter"
+    },
+    {
+     "gr": "η έκθεση",
+     "en": "exhibition",
+     "note": "feminine"
+    },
+    {
+     "gr": "ο τουρίστας / η τουρίστρια",
+     "en": "tourist"
+    },
+    {
+     "gr": "ο τουρισμός",
+     "en": "tourism",
+     "note": "masculine"
+    },
+    {
+     "gr": "οι άνθρωποι",
+     "en": "people",
+     "note": "plural"
+    },
+    {
+     "gr": "μερικοί άνθρωποι",
+     "en": "some people"
+    },
+    {
+     "gr": "προχωράω",
+     "en": "to go on / to proceed"
+    },
+    {
+     "gr": "πάμε παρακάτω;",
+     "en": "shall we move on?"
+    },
+    {
+     "gr": "η δραστηριότητα",
+     "en": "activity",
+     "note": "feminine"
+    },
+    {
+     "gr": "σχεδόν",
+     "en": "almost"
+    },
+    {
+     "gr": "η κωπηλασία",
+     "en": "rowing",
+     "note": "feminine"
+    },
+    {
+     "gr": "το γόνατο",
+     "en": "knee",
+     "note": "neuter"
+    },
+    {
+     "gr": "η πλάτη",
+     "en": "back (body part)",
+     "note": "feminine"
+    },
+    {
+     "gr": "η ξιφασκία",
+     "en": "fencing",
+     "note": "feminine"
+    },
+    {
+     "gr": "ο μοντέρνος χορός",
+     "en": "modern dance",
+     "note": "masculine"
+    },
+    {
+     "gr": "ο δάσκαλος / η δασκάλα",
+     "en": "teacher"
+    },
+    {
+     "gr": "υπέροχος / υπέροχη",
+     "en": "amazing / wonderful"
+    },
+    {
+     "gr": "ο συμμαθητής / η συμμαθήτρια",
+     "en": "classmate"
+    },
+    {
+     "gr": "χαλαρώνω",
+     "en": "to relax"
+    },
+    {
+     "gr": "χαλαρά",
+     "en": "casually / in a relaxed way"
+    },
+    {
+     "gr": "ευγενικός / ευγενική",
+     "en": "kind"
+    },
+    {
+     "gr": "θετικός / θετική",
+     "en": "positive"
+    },
+    {
+     "gr": "περνάω όμορφα",
+     "en": "to have a good time"
+    },
+    {
+     "gr": "απλός / απλή",
+     "en": "simple"
+    },
+    {
+     "gr": "ο επαγγελματίας",
+     "en": "professional",
+     "note": "masc./fem. common"
+    },
+    {
+     "gr": "ο χορευτής / η χορεύτρια",
+     "en": "dancer"
+    },
+    {
+     "gr": "ο χοντρός / η χοντρή",
+     "en": "fat"
+    },
+    {
+     "gr": "αδύνατος / αδύνατη",
+     "en": "skinny"
+    },
+    {
+     "gr": "ίσως",
+     "en": "perhaps"
+    },
+    {
+     "gr": "νομίζω",
+     "en": "to think / to believe"
+    },
+    {
+     "gr": "ευχάριστος / ευχάριστη",
+     "en": "enjoyable / pleasant"
+    },
+    {
+     "gr": "ευγνώμων",
+     "en": "thankful / grateful"
+    }
+   ]
+  },
+  "past_future": {
+   "label": "Present, Past & Future Verbs (B1)",
+   "words": [
+    {
+     "gr": "είμαι",
+     "en": "I am",
+     "note": "εγώ · present tense · past: ήμουν · future: θα είμαι"
+    },
+    {
+     "gr": "είσαι",
+     "en": "you are",
+     "note": "εσύ · present tense · past: ήσουν · future: θα είσαι"
+    },
+    {
+     "gr": "είναι",
+     "en": "he/she/it is",
+     "note": "αυτός/αυτή/αυτό · present tense · past: ήταν · future: θα είναι"
+    },
+    {
+     "gr": "είμαστε",
+     "en": "we are",
+     "note": "εμείς · present tense · past: ήμασταν · future: θα είμαστε"
+    },
+    {
+     "gr": "είστε",
+     "en": "you (pl.) are",
+     "note": "εσείς · present tense · past: ήσασταν · future: θα είστε"
+    },
+    {
+     "gr": "είναι",
+     "en": "they are",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: ήταν · future: θα είναι"
+    },
+    {
+     "gr": "ήμουν",
+     "en": "I was",
+     "note": "εγώ · present: είμαι (to be) · future: θα είμαι"
+    },
+    {
+     "gr": "ήσουν",
+     "en": "you were",
+     "note": "εσύ · present: είμαι (to be) · future: θα είσαι"
+    },
+    {
+     "gr": "ήταν",
+     "en": "he/she/it was",
+     "note": "αυτός/αυτή/αυτό · present: είμαι (to be) · future: θα είναι"
+    },
+    {
+     "gr": "ήμασταν",
+     "en": "we were",
+     "note": "εμείς · present: είμαι (to be) · future: θα είμαστε"
+    },
+    {
+     "gr": "ήσασταν",
+     "en": "you (pl.) were",
+     "note": "εσείς · present: είμαι (to be) · future: θα είστε"
+    },
+    {
+     "gr": "ήταν",
+     "en": "they were",
+     "note": "αυτοί/αυτές/αυτά · present: είμαι (to be) · future: θα είναι"
+    },
+    {
+     "gr": "θα είμαι",
+     "en": "I will be",
+     "note": "εγώ · present: είμαι (to be) · past: ήμουν"
+    },
+    {
+     "gr": "θα είσαι",
+     "en": "you will be",
+     "note": "εσύ · present: είμαι (to be) · past: ήσουν"
+    },
+    {
+     "gr": "θα είναι",
+     "en": "he/she/it will be",
+     "note": "αυτός/αυτή/αυτό · present: είμαι (to be) · past: ήταν"
+    },
+    {
+     "gr": "θα είμαστε",
+     "en": "we will be",
+     "note": "εμείς · present: είμαι (to be) · past: ήμασταν"
+    },
+    {
+     "gr": "θα είστε",
+     "en": "you (pl.) will be",
+     "note": "εσείς · present: είμαι (to be) · past: ήσασταν"
+    },
+    {
+     "gr": "θα είναι",
+     "en": "they will be",
+     "note": "αυτοί/αυτές/αυτά · present: είμαι (to be) · past: ήταν"
+    },
+    {
+     "gr": "τρώω",
+     "en": "I eat",
+     "note": "εγώ · present tense · past: έφαγα · future: θα φάω"
+    },
+    {
+     "gr": "τρως",
+     "en": "you eat",
+     "note": "εσύ · present tense · past: έφαγες · future: θα φας"
+    },
+    {
+     "gr": "τρώει",
+     "en": "he/she/it eats",
+     "note": "αυτός/αυτή/αυτό · present tense · past: έφαγε · future: θα φάει"
+    },
+    {
+     "gr": "τρώμε",
+     "en": "we eat",
+     "note": "εμείς · present tense · past: φάγαμε · future: θα φάμε"
+    },
+    {
+     "gr": "τρώτε",
+     "en": "you (pl.) eat",
+     "note": "εσείς · present tense · past: φάγατε · future: θα φάτε"
+    },
+    {
+     "gr": "τρώνε",
+     "en": "they eat",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: έφαγαν · future: θα φάνε"
+    },
+    {
+     "gr": "έφαγα",
+     "en": "I ate",
+     "note": "εγώ · present: τρώω (to eat) · future: θα φάω"
+    },
+    {
+     "gr": "έφαγες",
+     "en": "you ate",
+     "note": "εσύ · present: τρώω (to eat) · future: θα φας"
+    },
+    {
+     "gr": "έφαγε",
+     "en": "he/she/it ate",
+     "note": "αυτός/αυτή/αυτό · present: τρώω (to eat) · future: θα φάει"
+    },
+    {
+     "gr": "φάγαμε",
+     "en": "we ate",
+     "note": "εμείς · present: τρώω (to eat) · future: θα φάμε"
+    },
+    {
+     "gr": "φάγατε",
+     "en": "you (pl.) ate",
+     "note": "εσείς · present: τρώω (to eat) · future: θα φάτε"
+    },
+    {
+     "gr": "έφαγαν",
+     "en": "they ate",
+     "note": "αυτοί/αυτές/αυτά · present: τρώω (to eat) · future: θα φάνε"
+    },
+    {
+     "gr": "θα φάω",
+     "en": "I will eat",
+     "note": "εγώ · present: τρώω (to eat) · past: έφαγα"
+    },
+    {
+     "gr": "θα φας",
+     "en": "you will eat",
+     "note": "εσύ · present: τρώω (to eat) · past: έφαγες"
+    },
+    {
+     "gr": "θα φάει",
+     "en": "he/she/it will eat",
+     "note": "αυτός/αυτή/αυτό · present: τρώω (to eat) · past: έφαγε"
+    },
+    {
+     "gr": "θα φάμε",
+     "en": "we will eat",
+     "note": "εμείς · present: τρώω (to eat) · past: φάγαμε"
+    },
+    {
+     "gr": "θα φάτε",
+     "en": "you (pl.) will eat",
+     "note": "εσείς · present: τρώω (to eat) · past: φάγατε"
+    },
+    {
+     "gr": "θα φάνε",
+     "en": "they will eat",
+     "note": "αυτοί/αυτές/αυτά · present: τρώω (to eat) · past: έφαγαν"
+    },
+    {
+     "gr": "πίνω",
+     "en": "I drink",
+     "note": "εγώ · present tense · past: ήπια · future: θα πιω"
+    },
+    {
+     "gr": "πίνεις",
+     "en": "you drink",
+     "note": "εσύ · present tense · past: ήπιες · future: θα πιεις"
+    },
+    {
+     "gr": "πίνει",
+     "en": "he/she/it drinks",
+     "note": "αυτός/αυτή/αυτό · present tense · past: ήπιε · future: θα πιει"
+    },
+    {
+     "gr": "πίνουμε",
+     "en": "we drink",
+     "note": "εμείς · present tense · past: ήπιαμε · future: θα πιούμε"
+    },
+    {
+     "gr": "πίνετε",
+     "en": "you (pl.) drink",
+     "note": "εσείς · present tense · past: ήπιατε · future: θα πιείτε"
+    },
+    {
+     "gr": "πίνουν",
+     "en": "they drink",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: ήπιαν · future: θα πιουν"
+    },
+    {
+     "gr": "ήπια",
+     "en": "I drank",
+     "note": "εγώ · present: πίνω (to drink) · future: θα πιω"
+    },
+    {
+     "gr": "ήπιες",
+     "en": "you drank",
+     "note": "εσύ · present: πίνω (to drink) · future: θα πιεις"
+    },
+    {
+     "gr": "ήπιε",
+     "en": "he/she/it drank",
+     "note": "αυτός/αυτή/αυτό · present: πίνω (to drink) · future: θα πιει"
+    },
+    {
+     "gr": "ήπιαμε",
+     "en": "we drank",
+     "note": "εμείς · present: πίνω (to drink) · future: θα πιούμε"
+    },
+    {
+     "gr": "ήπιατε",
+     "en": "you (pl.) drank",
+     "note": "εσείς · present: πίνω (to drink) · future: θα πιείτε"
+    },
+    {
+     "gr": "ήπιαν",
+     "en": "they drank",
+     "note": "αυτοί/αυτές/αυτά · present: πίνω (to drink) · future: θα πιουν"
+    },
+    {
+     "gr": "θα πιω",
+     "en": "I will drink",
+     "note": "εγώ · present: πίνω (to drink) · past: ήπια"
+    },
+    {
+     "gr": "θα πιεις",
+     "en": "you will drink",
+     "note": "εσύ · present: πίνω (to drink) · past: ήπιες"
+    },
+    {
+     "gr": "θα πιει",
+     "en": "he/she/it will drink",
+     "note": "αυτός/αυτή/αυτό · present: πίνω (to drink) · past: ήπιε"
+    },
+    {
+     "gr": "θα πιούμε",
+     "en": "we will drink",
+     "note": "εμείς · present: πίνω (to drink) · past: ήπιαμε"
+    },
+    {
+     "gr": "θα πιείτε",
+     "en": "you (pl.) will drink",
+     "note": "εσείς · present: πίνω (to drink) · past: ήπιατε"
+    },
+    {
+     "gr": "θα πιουν",
+     "en": "they will drink",
+     "note": "αυτοί/αυτές/αυτά · present: πίνω (to drink) · past: ήπιαν"
+    },
+    {
+     "gr": "πάω",
+     "en": "I go",
+     "note": "εγώ · present tense · past: πήγα · future: θα πάω"
+    },
+    {
+     "gr": "πας",
+     "en": "you go",
+     "note": "εσύ · present tense · past: πήγες · future: θα πας"
+    },
+    {
+     "gr": "πάει",
+     "en": "he/she/it goes",
+     "note": "αυτός/αυτή/αυτό · present tense · past: πήγε · future: θα πάει"
+    },
+    {
+     "gr": "πάμε",
+     "en": "we go",
+     "note": "εμείς · present tense · past: πήγαμε · future: θα πάμε"
+    },
+    {
+     "gr": "πάτε",
+     "en": "you (pl.) go",
+     "note": "εσείς · present tense · past: πήγατε · future: θα πάτε"
+    },
+    {
+     "gr": "πάνε",
+     "en": "they go",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: πήγαν · future: θα πάνε"
+    },
+    {
+     "gr": "πήγα",
+     "en": "I went",
+     "note": "εγώ · present: πάω (to go) · future: θα πάω"
+    },
+    {
+     "gr": "πήγες",
+     "en": "you went",
+     "note": "εσύ · present: πάω (to go) · future: θα πας"
+    },
+    {
+     "gr": "πήγε",
+     "en": "he/she/it went",
+     "note": "αυτός/αυτή/αυτό · present: πάω (to go) · future: θα πάει"
+    },
+    {
+     "gr": "πήγαμε",
+     "en": "we went",
+     "note": "εμείς · present: πάω (to go) · future: θα πάμε"
+    },
+    {
+     "gr": "πήγατε",
+     "en": "you (pl.) went",
+     "note": "εσείς · present: πάω (to go) · future: θα πάτε"
+    },
+    {
+     "gr": "πήγαν",
+     "en": "they went",
+     "note": "αυτοί/αυτές/αυτά · present: πάω (to go) · future: θα πάνε"
+    },
+    {
+     "gr": "θα πάω",
+     "en": "I will go",
+     "note": "εγώ · present: πάω (to go) · past: πήγα"
+    },
+    {
+     "gr": "θα πας",
+     "en": "you will go",
+     "note": "εσύ · present: πάω (to go) · past: πήγες"
+    },
+    {
+     "gr": "θα πάει",
+     "en": "he/she/it will go",
+     "note": "αυτός/αυτή/αυτό · present: πάω (to go) · past: πήγε"
+    },
+    {
+     "gr": "θα πάμε",
+     "en": "we will go",
+     "note": "εμείς · present: πάω (to go) · past: πήγαμε"
+    },
+    {
+     "gr": "θα πάτε",
+     "en": "you (pl.) will go",
+     "note": "εσείς · present: πάω (to go) · past: πήγατε"
+    },
+    {
+     "gr": "θα πάνε",
+     "en": "they will go",
+     "note": "αυτοί/αυτές/αυτά · present: πάω (to go) · past: πήγαν"
+    },
+    {
+     "gr": "βλέπω",
+     "en": "I see",
+     "note": "εγώ · present tense · past: είδα · future: θα δω"
+    },
+    {
+     "gr": "βλέπεις",
+     "en": "you see",
+     "note": "εσύ · present tense · past: είδες · future: θα δεις"
+    },
+    {
+     "gr": "βλέπει",
+     "en": "he/she/it sees",
+     "note": "αυτός/αυτή/αυτό · present tense · past: είδε · future: θα δει"
+    },
+    {
+     "gr": "βλέπουμε",
+     "en": "we see",
+     "note": "εμείς · present tense · past: είδαμε · future: θα δούμε"
+    },
+    {
+     "gr": "βλέπετε",
+     "en": "you (pl.) see",
+     "note": "εσείς · present tense · past: είδατε · future: θα δείτε"
+    },
+    {
+     "gr": "βλέπουν",
+     "en": "they see",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: είδαν · future: θα δουν"
+    },
+    {
+     "gr": "είδα",
+     "en": "I saw",
+     "note": "εγώ · present: βλέπω (to see) · future: θα δω"
+    },
+    {
+     "gr": "είδες",
+     "en": "you saw",
+     "note": "εσύ · present: βλέπω (to see) · future: θα δεις"
+    },
+    {
+     "gr": "είδε",
+     "en": "he/she/it saw",
+     "note": "αυτός/αυτή/αυτό · present: βλέπω (to see) · future: θα δει"
+    },
+    {
+     "gr": "είδαμε",
+     "en": "we saw",
+     "note": "εμείς · present: βλέπω (to see) · future: θα δούμε"
+    },
+    {
+     "gr": "είδατε",
+     "en": "you (pl.) saw",
+     "note": "εσείς · present: βλέπω (to see) · future: θα δείτε"
+    },
+    {
+     "gr": "είδαν",
+     "en": "they saw",
+     "note": "αυτοί/αυτές/αυτά · present: βλέπω (to see) · future: θα δουν"
+    },
+    {
+     "gr": "θα δω",
+     "en": "I will see",
+     "note": "εγώ · present: βλέπω (to see) · past: είδα"
+    },
+    {
+     "gr": "θα δεις",
+     "en": "you will see",
+     "note": "εσύ · present: βλέπω (to see) · past: είδες"
+    },
+    {
+     "gr": "θα δει",
+     "en": "he/she/it will see",
+     "note": "αυτός/αυτή/αυτό · present: βλέπω (to see) · past: είδε"
+    },
+    {
+     "gr": "θα δούμε",
+     "en": "we will see",
+     "note": "εμείς · present: βλέπω (to see) · past: είδαμε"
+    },
+    {
+     "gr": "θα δείτε",
+     "en": "you (pl.) will see",
+     "note": "εσείς · present: βλέπω (to see) · past: είδατε"
+    },
+    {
+     "gr": "θα δουν",
+     "en": "they will see",
+     "note": "αυτοί/αυτές/αυτά · present: βλέπω (to see) · past: είδαν"
+    },
+    {
+     "gr": "λέω",
+     "en": "I say",
+     "note": "εγώ · present tense · past: είπα · future: θα πω"
+    },
+    {
+     "gr": "λες",
+     "en": "you say",
+     "note": "εσύ · present tense · past: είπες · future: θα πεις"
+    },
+    {
+     "gr": "λέει",
+     "en": "he/she/it says",
+     "note": "αυτός/αυτή/αυτό · present tense · past: είπε · future: θα πει"
+    },
+    {
+     "gr": "λέμε",
+     "en": "we say",
+     "note": "εμείς · present tense · past: είπαμε · future: θα πούμε"
+    },
+    {
+     "gr": "λέτε",
+     "en": "you (pl.) say",
+     "note": "εσείς · present tense · past: είπατε · future: θα πείτε"
+    },
+    {
+     "gr": "λένε",
+     "en": "they say",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: είπαν · future: θα πουν"
+    },
+    {
+     "gr": "είπα",
+     "en": "I said",
+     "note": "εγώ · present: λέω (to say) · future: θα πω"
+    },
+    {
+     "gr": "είπες",
+     "en": "you said",
+     "note": "εσύ · present: λέω (to say) · future: θα πεις"
+    },
+    {
+     "gr": "είπε",
+     "en": "he/she/it said",
+     "note": "αυτός/αυτή/αυτό · present: λέω (to say) · future: θα πει"
+    },
+    {
+     "gr": "είπαμε",
+     "en": "we said",
+     "note": "εμείς · present: λέω (to say) · future: θα πούμε"
+    },
+    {
+     "gr": "είπατε",
+     "en": "you (pl.) said",
+     "note": "εσείς · present: λέω (to say) · future: θα πείτε"
+    },
+    {
+     "gr": "είπαν",
+     "en": "they said",
+     "note": "αυτοί/αυτές/αυτά · present: λέω (to say) · future: θα πουν"
+    },
+    {
+     "gr": "θα πω",
+     "en": "I will say",
+     "note": "εγώ · present: λέω (to say) · past: είπα"
+    },
+    {
+     "gr": "θα πεις",
+     "en": "you will say",
+     "note": "εσύ · present: λέω (to say) · past: είπες"
+    },
+    {
+     "gr": "θα πει",
+     "en": "he/she/it will say",
+     "note": "αυτός/αυτή/αυτό · present: λέω (to say) · past: είπε"
+    },
+    {
+     "gr": "θα πούμε",
+     "en": "we will say",
+     "note": "εμείς · present: λέω (to say) · past: είπαμε"
+    },
+    {
+     "gr": "θα πείτε",
+     "en": "you (pl.) will say",
+     "note": "εσείς · present: λέω (to say) · past: είπατε"
+    },
+    {
+     "gr": "θα πουν",
+     "en": "they will say",
+     "note": "αυτοί/αυτές/αυτά · present: λέω (to say) · past: είπαν"
+    },
+    {
+     "gr": "κάνω",
+     "en": "I do / make",
+     "note": "εγώ · present tense · past: έκανα · future: θα κάνω"
+    },
+    {
+     "gr": "κάνεις",
+     "en": "you do / make",
+     "note": "εσύ · present tense · past: έκανες · future: θα κάνεις"
+    },
+    {
+     "gr": "κάνει",
+     "en": "he/she/it does / makes",
+     "note": "αυτός/αυτή/αυτό · present tense · past: έκανε · future: θα κάνει"
+    },
+    {
+     "gr": "κάνουμε",
+     "en": "we do / make",
+     "note": "εμείς · present tense · past: κάναμε · future: θα κάνουμε"
+    },
+    {
+     "gr": "κάνετε",
+     "en": "you (pl.) do / make",
+     "note": "εσείς · present tense · past: κάνατε · future: θα κάνετε"
+    },
+    {
+     "gr": "κάνουν",
+     "en": "they do / make",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: έκαναν · future: θα κάνουν"
+    },
+    {
+     "gr": "έκανα",
+     "en": "I did / made",
+     "note": "εγώ · present: κάνω (to do / make) · future: θα κάνω"
+    },
+    {
+     "gr": "έκανες",
+     "en": "you did / made",
+     "note": "εσύ · present: κάνω (to do / make) · future: θα κάνεις"
+    },
+    {
+     "gr": "έκανε",
+     "en": "he/she/it did / made",
+     "note": "αυτός/αυτή/αυτό · present: κάνω (to do / make) · future: θα κάνει"
+    },
+    {
+     "gr": "κάναμε",
+     "en": "we did / made",
+     "note": "εμείς · present: κάνω (to do / make) · future: θα κάνουμε"
+    },
+    {
+     "gr": "κάνατε",
+     "en": "you (pl.) did / made",
+     "note": "εσείς · present: κάνω (to do / make) · future: θα κάνετε"
+    },
+    {
+     "gr": "έκαναν",
+     "en": "they did / made",
+     "note": "αυτοί/αυτές/αυτά · present: κάνω (to do / make) · future: θα κάνουν"
+    },
+    {
+     "gr": "θα κάνω",
+     "en": "I will do / make",
+     "note": "εγώ · present: κάνω (to do / make) · past: έκανα"
+    },
+    {
+     "gr": "θα κάνεις",
+     "en": "you will do / make",
+     "note": "εσύ · present: κάνω (to do / make) · past: έκανες"
+    },
+    {
+     "gr": "θα κάνει",
+     "en": "he/she/it will do / make",
+     "note": "αυτός/αυτή/αυτό · present: κάνω (to do / make) · past: έκανε"
+    },
+    {
+     "gr": "θα κάνουμε",
+     "en": "we will do / make",
+     "note": "εμείς · present: κάνω (to do / make) · past: κάναμε"
+    },
+    {
+     "gr": "θα κάνετε",
+     "en": "you (pl.) will do / make",
+     "note": "εσείς · present: κάνω (to do / make) · past: κάνατε"
+    },
+    {
+     "gr": "θα κάνουν",
+     "en": "they will do / make",
+     "note": "αυτοί/αυτές/αυτά · present: κάνω (to do / make) · past: έκαναν"
+    },
+    {
+     "gr": "έρχομαι",
+     "en": "I come",
+     "note": "εγώ · present tense · past: ήρθα · future: θα έρθω"
+    },
+    {
+     "gr": "έρχεσαι",
+     "en": "you come",
+     "note": "εσύ · present tense · past: ήρθες · future: θα έρθεις"
+    },
+    {
+     "gr": "έρχεται",
+     "en": "he/she/it comes",
+     "note": "αυτός/αυτή/αυτό · present tense · past: ήρθε · future: θα έρθει"
+    },
+    {
+     "gr": "ερχόμαστε",
+     "en": "we come",
+     "note": "εμείς · present tense · past: ήρθαμε · future: θα έρθουμε"
+    },
+    {
+     "gr": "έρχεστε",
+     "en": "you (pl.) come",
+     "note": "εσείς · present tense · past: ήρθατε · future: θα έρθετε"
+    },
+    {
+     "gr": "έρχονται",
+     "en": "they come",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: ήρθαν · future: θα έρθουν"
+    },
+    {
+     "gr": "ήρθα",
+     "en": "I came",
+     "note": "εγώ · present: έρχομαι (to come) · future: θα έρθω"
+    },
+    {
+     "gr": "ήρθες",
+     "en": "you came",
+     "note": "εσύ · present: έρχομαι (to come) · future: θα έρθεις"
+    },
+    {
+     "gr": "ήρθε",
+     "en": "he/she/it came",
+     "note": "αυτός/αυτή/αυτό · present: έρχομαι (to come) · future: θα έρθει"
+    },
+    {
+     "gr": "ήρθαμε",
+     "en": "we came",
+     "note": "εμείς · present: έρχομαι (to come) · future: θα έρθουμε"
+    },
+    {
+     "gr": "ήρθατε",
+     "en": "you (pl.) came",
+     "note": "εσείς · present: έρχομαι (to come) · future: θα έρθετε"
+    },
+    {
+     "gr": "ήρθαν",
+     "en": "they came",
+     "note": "αυτοί/αυτές/αυτά · present: έρχομαι (to come) · future: θα έρθουν"
+    },
+    {
+     "gr": "θα έρθω",
+     "en": "I will come",
+     "note": "εγώ · present: έρχομαι (to come) · past: ήρθα"
+    },
+    {
+     "gr": "θα έρθεις",
+     "en": "you will come",
+     "note": "εσύ · present: έρχομαι (to come) · past: ήρθες"
+    },
+    {
+     "gr": "θα έρθει",
+     "en": "he/she/it will come",
+     "note": "αυτός/αυτή/αυτό · present: έρχομαι (to come) · past: ήρθε"
+    },
+    {
+     "gr": "θα έρθουμε",
+     "en": "we will come",
+     "note": "εμείς · present: έρχομαι (to come) · past: ήρθαμε"
+    },
+    {
+     "gr": "θα έρθετε",
+     "en": "you (pl.) will come",
+     "note": "εσείς · present: έρχομαι (to come) · past: ήρθατε"
+    },
+    {
+     "gr": "θα έρθουν",
+     "en": "they will come",
+     "note": "αυτοί/αυτές/αυτά · present: έρχομαι (to come) · past: ήρθαν"
+    },
+    {
+     "gr": "βγαίνω",
+     "en": "I go out",
+     "note": "εγώ · present tense · past: βγήκα · future: θα βγω"
+    },
+    {
+     "gr": "βγαίνεις",
+     "en": "you go out",
+     "note": "εσύ · present tense · past: βγήκες · future: θα βγεις"
+    },
+    {
+     "gr": "βγαίνει",
+     "en": "he/she/it goes out",
+     "note": "αυτός/αυτή/αυτό · present tense · past: βγήκε · future: θα βγει"
+    },
+    {
+     "gr": "βγαίνουμε",
+     "en": "we go out",
+     "note": "εμείς · present tense · past: βγήκαμε · future: θα βγούμε"
+    },
+    {
+     "gr": "βγαίνετε",
+     "en": "you (pl.) go out",
+     "note": "εσείς · present tense · past: βγήκατε · future: θα βγείτε"
+    },
+    {
+     "gr": "βγαίνουν",
+     "en": "they go out",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: βγήκαν · future: θα βγουν"
+    },
+    {
+     "gr": "βγήκα",
+     "en": "I went out",
+     "note": "εγώ · present: βγαίνω (to go out) · future: θα βγω"
+    },
+    {
+     "gr": "βγήκες",
+     "en": "you went out",
+     "note": "εσύ · present: βγαίνω (to go out) · future: θα βγεις"
+    },
+    {
+     "gr": "βγήκε",
+     "en": "he/she/it went out",
+     "note": "αυτός/αυτή/αυτό · present: βγαίνω (to go out) · future: θα βγει"
+    },
+    {
+     "gr": "βγήκαμε",
+     "en": "we went out",
+     "note": "εμείς · present: βγαίνω (to go out) · future: θα βγούμε"
+    },
+    {
+     "gr": "βγήκατε",
+     "en": "you (pl.) went out",
+     "note": "εσείς · present: βγαίνω (to go out) · future: θα βγείτε"
+    },
+    {
+     "gr": "βγήκαν",
+     "en": "they went out",
+     "note": "αυτοί/αυτές/αυτά · present: βγαίνω (to go out) · future: θα βγουν"
+    },
+    {
+     "gr": "θα βγω",
+     "en": "I will go out",
+     "note": "εγώ · present: βγαίνω (to go out) · past: βγήκα"
+    },
+    {
+     "gr": "θα βγεις",
+     "en": "you will go out",
+     "note": "εσύ · present: βγαίνω (to go out) · past: βγήκες"
+    },
+    {
+     "gr": "θα βγει",
+     "en": "he/she/it will go out",
+     "note": "αυτός/αυτή/αυτό · present: βγαίνω (to go out) · past: βγήκε"
+    },
+    {
+     "gr": "θα βγούμε",
+     "en": "we will go out",
+     "note": "εμείς · present: βγαίνω (to go out) · past: βγήκαμε"
+    },
+    {
+     "gr": "θα βγείτε",
+     "en": "you (pl.) will go out",
+     "note": "εσείς · present: βγαίνω (to go out) · past: βγήκατε"
+    },
+    {
+     "gr": "θα βγουν",
+     "en": "they will go out",
+     "note": "αυτοί/αυτές/αυτά · present: βγαίνω (to go out) · past: βγήκαν"
+    },
+    {
+     "gr": "φεύγω",
+     "en": "I leave",
+     "note": "εγώ · present tense · past: έφυγα · future: θα φύγω"
+    },
+    {
+     "gr": "φεύγεις",
+     "en": "you leave",
+     "note": "εσύ · present tense · past: έφυγες · future: θα φύγεις"
+    },
+    {
+     "gr": "φεύγει",
+     "en": "he/she/it leaves",
+     "note": "αυτός/αυτή/αυτό · present tense · past: έφυγε · future: θα φύγει"
+    },
+    {
+     "gr": "φεύγουμε",
+     "en": "we leave",
+     "note": "εμείς · present tense · past: φύγαμε · future: θα φύγουμε"
+    },
+    {
+     "gr": "φεύγετε",
+     "en": "you (pl.) leave",
+     "note": "εσείς · present tense · past: φύγατε · future: θα φύγετε"
+    },
+    {
+     "gr": "φεύγουν",
+     "en": "they leave",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: έφυγαν · future: θα φύγουν"
+    },
+    {
+     "gr": "έφυγα",
+     "en": "I left",
+     "note": "εγώ · present: φεύγω (to leave) · future: θα φύγω"
+    },
+    {
+     "gr": "έφυγες",
+     "en": "you left",
+     "note": "εσύ · present: φεύγω (to leave) · future: θα φύγεις"
+    },
+    {
+     "gr": "έφυγε",
+     "en": "he/she/it left",
+     "note": "αυτός/αυτή/αυτό · present: φεύγω (to leave) · future: θα φύγει"
+    },
+    {
+     "gr": "φύγαμε",
+     "en": "we left",
+     "note": "εμείς · present: φεύγω (to leave) · future: θα φύγουμε"
+    },
+    {
+     "gr": "φύγατε",
+     "en": "you (pl.) left",
+     "note": "εσείς · present: φεύγω (to leave) · future: θα φύγετε"
+    },
+    {
+     "gr": "έφυγαν",
+     "en": "they left",
+     "note": "αυτοί/αυτές/αυτά · present: φεύγω (to leave) · future: θα φύγουν"
+    },
+    {
+     "gr": "θα φύγω",
+     "en": "I will leave",
+     "note": "εγώ · present: φεύγω (to leave) · past: έφυγα"
+    },
+    {
+     "gr": "θα φύγεις",
+     "en": "you will leave",
+     "note": "εσύ · present: φεύγω (to leave) · past: έφυγες"
+    },
+    {
+     "gr": "θα φύγει",
+     "en": "he/she/it will leave",
+     "note": "αυτός/αυτή/αυτό · present: φεύγω (to leave) · past: έφυγε"
+    },
+    {
+     "gr": "θα φύγουμε",
+     "en": "we will leave",
+     "note": "εμείς · present: φεύγω (to leave) · past: φύγαμε"
+    },
+    {
+     "gr": "θα φύγετε",
+     "en": "you (pl.) will leave",
+     "note": "εσείς · present: φεύγω (to leave) · past: φύγατε"
+    },
+    {
+     "gr": "θα φύγουν",
+     "en": "they will leave",
+     "note": "αυτοί/αυτές/αυτά · present: φεύγω (to leave) · past: έφυγαν"
+    },
+    {
+     "gr": "παίρνω",
+     "en": "I take",
+     "note": "εγώ · present tense · past: πήρα · future: θα πάρω"
+    },
+    {
+     "gr": "παίρνεις",
+     "en": "you take",
+     "note": "εσύ · present tense · past: πήρες · future: θα πάρεις"
+    },
+    {
+     "gr": "παίρνει",
+     "en": "he/she/it takes",
+     "note": "αυτός/αυτή/αυτό · present tense · past: πήρε · future: θα πάρει"
+    },
+    {
+     "gr": "παίρνουμε",
+     "en": "we take",
+     "note": "εμείς · present tense · past: πήραμε · future: θα πάρουμε"
+    },
+    {
+     "gr": "παίρνετε",
+     "en": "you (pl.) take",
+     "note": "εσείς · present tense · past: πήρατε · future: θα πάρετε"
+    },
+    {
+     "gr": "παίρνουν",
+     "en": "they take",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: πήραν · future: θα πάρουν"
+    },
+    {
+     "gr": "πήρα",
+     "en": "I took",
+     "note": "εγώ · present: παίρνω (to take) · future: θα πάρω"
+    },
+    {
+     "gr": "πήρες",
+     "en": "you took",
+     "note": "εσύ · present: παίρνω (to take) · future: θα πάρεις"
+    },
+    {
+     "gr": "πήρε",
+     "en": "he/she/it took",
+     "note": "αυτός/αυτή/αυτό · present: παίρνω (to take) · future: θα πάρει"
+    },
+    {
+     "gr": "πήραμε",
+     "en": "we took",
+     "note": "εμείς · present: παίρνω (to take) · future: θα πάρουμε"
+    },
+    {
+     "gr": "πήρατε",
+     "en": "you (pl.) took",
+     "note": "εσείς · present: παίρνω (to take) · future: θα πάρετε"
+    },
+    {
+     "gr": "πήραν",
+     "en": "they took",
+     "note": "αυτοί/αυτές/αυτά · present: παίρνω (to take) · future: θα πάρουν"
+    },
+    {
+     "gr": "θα πάρω",
+     "en": "I will take",
+     "note": "εγώ · present: παίρνω (to take) · past: πήρα"
+    },
+    {
+     "gr": "θα πάρεις",
+     "en": "you will take",
+     "note": "εσύ · present: παίρνω (to take) · past: πήρες"
+    },
+    {
+     "gr": "θα πάρει",
+     "en": "he/she/it will take",
+     "note": "αυτός/αυτή/αυτό · present: παίρνω (to take) · past: πήρε"
+    },
+    {
+     "gr": "θα πάρουμε",
+     "en": "we will take",
+     "note": "εμείς · present: παίρνω (to take) · past: πήραμε"
+    },
+    {
+     "gr": "θα πάρετε",
+     "en": "you (pl.) will take",
+     "note": "εσείς · present: παίρνω (to take) · past: πήρατε"
+    },
+    {
+     "gr": "θα πάρουν",
+     "en": "they will take",
+     "note": "αυτοί/αυτές/αυτά · present: παίρνω (to take) · past: πήραν"
+    },
+    {
+     "gr": "δίνω",
+     "en": "I give",
+     "note": "εγώ · present tense · past: έδωσα · future: θα δώσω"
+    },
+    {
+     "gr": "δίνεις",
+     "en": "you give",
+     "note": "εσύ · present tense · past: έδωσες · future: θα δώσεις"
+    },
+    {
+     "gr": "δίνει",
+     "en": "he/she/it gives",
+     "note": "αυτός/αυτή/αυτό · present tense · past: έδωσε · future: θα δώσει"
+    },
+    {
+     "gr": "δίνουμε",
+     "en": "we give",
+     "note": "εμείς · present tense · past: δώσαμε · future: θα δώσουμε"
+    },
+    {
+     "gr": "δίνετε",
+     "en": "you (pl.) give",
+     "note": "εσείς · present tense · past: δώσατε · future: θα δώσετε"
+    },
+    {
+     "gr": "δίνουν",
+     "en": "they give",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: έδωσαν · future: θα δώσουν"
+    },
+    {
+     "gr": "έδωσα",
+     "en": "I gave",
+     "note": "εγώ · present: δίνω (to give) · future: θα δώσω"
+    },
+    {
+     "gr": "έδωσες",
+     "en": "you gave",
+     "note": "εσύ · present: δίνω (to give) · future: θα δώσεις"
+    },
+    {
+     "gr": "έδωσε",
+     "en": "he/she/it gave",
+     "note": "αυτός/αυτή/αυτό · present: δίνω (to give) · future: θα δώσει"
+    },
+    {
+     "gr": "δώσαμε",
+     "en": "we gave",
+     "note": "εμείς · present: δίνω (to give) · future: θα δώσουμε"
+    },
+    {
+     "gr": "δώσατε",
+     "en": "you (pl.) gave",
+     "note": "εσείς · present: δίνω (to give) · future: θα δώσετε"
+    },
+    {
+     "gr": "έδωσαν",
+     "en": "they gave",
+     "note": "αυτοί/αυτές/αυτά · present: δίνω (to give) · future: θα δώσουν"
+    },
+    {
+     "gr": "θα δώσω",
+     "en": "I will give",
+     "note": "εγώ · present: δίνω (to give) · past: έδωσα"
+    },
+    {
+     "gr": "θα δώσεις",
+     "en": "you will give",
+     "note": "εσύ · present: δίνω (to give) · past: έδωσες"
+    },
+    {
+     "gr": "θα δώσει",
+     "en": "he/she/it will give",
+     "note": "αυτός/αυτή/αυτό · present: δίνω (to give) · past: έδωσε"
+    },
+    {
+     "gr": "θα δώσουμε",
+     "en": "we will give",
+     "note": "εμείς · present: δίνω (to give) · past: δώσαμε"
+    },
+    {
+     "gr": "θα δώσετε",
+     "en": "you (pl.) will give",
+     "note": "εσείς · present: δίνω (to give) · past: δώσατε"
+    },
+    {
+     "gr": "θα δώσουν",
+     "en": "they will give",
+     "note": "αυτοί/αυτές/αυτά · present: δίνω (to give) · past: έδωσαν"
+    },
+    {
+     "gr": "βρίσκω",
+     "en": "I find",
+     "note": "εγώ · present tense · past: βρήκα · future: θα βρω"
+    },
+    {
+     "gr": "βρίσκεις",
+     "en": "you find",
+     "note": "εσύ · present tense · past: βρήκες · future: θα βρεις"
+    },
+    {
+     "gr": "βρίσκει",
+     "en": "he/she/it finds",
+     "note": "αυτός/αυτή/αυτό · present tense · past: βρήκε · future: θα βρει"
+    },
+    {
+     "gr": "βρίσκουμε",
+     "en": "we find",
+     "note": "εμείς · present tense · past: βρήκαμε · future: θα βρούμε"
+    },
+    {
+     "gr": "βρίσκετε",
+     "en": "you (pl.) find",
+     "note": "εσείς · present tense · past: βρήκατε · future: θα βρείτε"
+    },
+    {
+     "gr": "βρίσκουν",
+     "en": "they find",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: βρήκαν · future: θα βρουν"
+    },
+    {
+     "gr": "βρήκα",
+     "en": "I found",
+     "note": "εγώ · present: βρίσκω (to find) · future: θα βρω"
+    },
+    {
+     "gr": "βρήκες",
+     "en": "you found",
+     "note": "εσύ · present: βρίσκω (to find) · future: θα βρεις"
+    },
+    {
+     "gr": "βρήκε",
+     "en": "he/she/it found",
+     "note": "αυτός/αυτή/αυτό · present: βρίσκω (to find) · future: θα βρει"
+    },
+    {
+     "gr": "βρήκαμε",
+     "en": "we found",
+     "note": "εμείς · present: βρίσκω (to find) · future: θα βρούμε"
+    },
+    {
+     "gr": "βρήκατε",
+     "en": "you (pl.) found",
+     "note": "εσείς · present: βρίσκω (to find) · future: θα βρείτε"
+    },
+    {
+     "gr": "βρήκαν",
+     "en": "they found",
+     "note": "αυτοί/αυτές/αυτά · present: βρίσκω (to find) · future: θα βρουν"
+    },
+    {
+     "gr": "θα βρω",
+     "en": "I will find",
+     "note": "εγώ · present: βρίσκω (to find) · past: βρήκα"
+    },
+    {
+     "gr": "θα βρεις",
+     "en": "you will find",
+     "note": "εσύ · present: βρίσκω (to find) · past: βρήκες"
+    },
+    {
+     "gr": "θα βρει",
+     "en": "he/she/it will find",
+     "note": "αυτός/αυτή/αυτό · present: βρίσκω (to find) · past: βρήκε"
+    },
+    {
+     "gr": "θα βρούμε",
+     "en": "we will find",
+     "note": "εμείς · present: βρίσκω (to find) · past: βρήκαμε"
+    },
+    {
+     "gr": "θα βρείτε",
+     "en": "you (pl.) will find",
+     "note": "εσείς · present: βρίσκω (to find) · past: βρήκατε"
+    },
+    {
+     "gr": "θα βρουν",
+     "en": "they will find",
+     "note": "αυτοί/αυτές/αυτά · present: βρίσκω (to find) · past: βρήκαν"
+    },
+    {
+     "gr": "μπαίνω",
+     "en": "I enter",
+     "note": "εγώ · present tense · past: μπήκα · future: θα μπω"
+    },
+    {
+     "gr": "μπαίνεις",
+     "en": "you enter",
+     "note": "εσύ · present tense · past: μπήκες · future: θα μπεις"
+    },
+    {
+     "gr": "μπαίνει",
+     "en": "he/she/it enters",
+     "note": "αυτός/αυτή/αυτό · present tense · past: μπήκε · future: θα μπει"
+    },
+    {
+     "gr": "μπαίνουμε",
+     "en": "we enter",
+     "note": "εμείς · present tense · past: μπήκαμε · future: θα μπούμε"
+    },
+    {
+     "gr": "μπαίνετε",
+     "en": "you (pl.) enter",
+     "note": "εσείς · present tense · past: μπήκατε · future: θα μπείτε"
+    },
+    {
+     "gr": "μπαίνουν",
+     "en": "they enter",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: μπήκαν · future: θα μπουν"
+    },
+    {
+     "gr": "μπήκα",
+     "en": "I entered",
+     "note": "εγώ · present: μπαίνω (to enter) · future: θα μπω"
+    },
+    {
+     "gr": "μπήκες",
+     "en": "you entered",
+     "note": "εσύ · present: μπαίνω (to enter) · future: θα μπεις"
+    },
+    {
+     "gr": "μπήκε",
+     "en": "he/she/it entered",
+     "note": "αυτός/αυτή/αυτό · present: μπαίνω (to enter) · future: θα μπει"
+    },
+    {
+     "gr": "μπήκαμε",
+     "en": "we entered",
+     "note": "εμείς · present: μπαίνω (to enter) · future: θα μπούμε"
+    },
+    {
+     "gr": "μπήκατε",
+     "en": "you (pl.) entered",
+     "note": "εσείς · present: μπαίνω (to enter) · future: θα μπείτε"
+    },
+    {
+     "gr": "μπήκαν",
+     "en": "they entered",
+     "note": "αυτοί/αυτές/αυτά · present: μπαίνω (to enter) · future: θα μπουν"
+    },
+    {
+     "gr": "θα μπω",
+     "en": "I will enter",
+     "note": "εγώ · present: μπαίνω (to enter) · past: μπήκα"
+    },
+    {
+     "gr": "θα μπεις",
+     "en": "you will enter",
+     "note": "εσύ · present: μπαίνω (to enter) · past: μπήκες"
+    },
+    {
+     "gr": "θα μπει",
+     "en": "he/she/it will enter",
+     "note": "αυτός/αυτή/αυτό · present: μπαίνω (to enter) · past: μπήκε"
+    },
+    {
+     "gr": "θα μπούμε",
+     "en": "we will enter",
+     "note": "εμείς · present: μπαίνω (to enter) · past: μπήκαμε"
+    },
+    {
+     "gr": "θα μπείτε",
+     "en": "you (pl.) will enter",
+     "note": "εσείς · present: μπαίνω (to enter) · past: μπήκατε"
+    },
+    {
+     "gr": "θα μπουν",
+     "en": "they will enter",
+     "note": "αυτοί/αυτές/αυτά · present: μπαίνω (to enter) · past: μπήκαν"
+    },
+    {
+     "gr": "γίνομαι",
+     "en": "I become",
+     "note": "εγώ · present tense · past: έγινα · future: θα γίνω"
+    },
+    {
+     "gr": "γίνεσαι",
+     "en": "you become",
+     "note": "εσύ · present tense · past: έγινες · future: θα γίνεις"
+    },
+    {
+     "gr": "γίνεται",
+     "en": "he/she/it becomes",
+     "note": "αυτός/αυτή/αυτό · present tense · past: έγινε · future: θα γίνει"
+    },
+    {
+     "gr": "γινόμαστε",
+     "en": "we become",
+     "note": "εμείς · present tense · past: γίναμε · future: θα γίνουμε"
+    },
+    {
+     "gr": "γίνεστε",
+     "en": "you (pl.) become",
+     "note": "εσείς · present tense · past: γίνατε · future: θα γίνετε"
+    },
+    {
+     "gr": "γίνονται",
+     "en": "they become",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: έγιναν · future: θα γίνουν"
+    },
+    {
+     "gr": "έγινα",
+     "en": "I became",
+     "note": "εγώ · present: γίνομαι (to become) · future: θα γίνω"
+    },
+    {
+     "gr": "έγινες",
+     "en": "you became",
+     "note": "εσύ · present: γίνομαι (to become) · future: θα γίνεις"
+    },
+    {
+     "gr": "έγινε",
+     "en": "he/she/it became",
+     "note": "αυτός/αυτή/αυτό · present: γίνομαι (to become) · future: θα γίνει"
+    },
+    {
+     "gr": "γίναμε",
+     "en": "we became",
+     "note": "εμείς · present: γίνομαι (to become) · future: θα γίνουμε"
+    },
+    {
+     "gr": "γίνατε",
+     "en": "you (pl.) became",
+     "note": "εσείς · present: γίνομαι (to become) · future: θα γίνετε"
+    },
+    {
+     "gr": "έγιναν",
+     "en": "they became",
+     "note": "αυτοί/αυτές/αυτά · present: γίνομαι (to become) · future: θα γίνουν"
+    },
+    {
+     "gr": "θα γίνω",
+     "en": "I will become",
+     "note": "εγώ · present: γίνομαι (to become) · past: έγινα"
+    },
+    {
+     "gr": "θα γίνεις",
+     "en": "you will become",
+     "note": "εσύ · present: γίνομαι (to become) · past: έγινες"
+    },
+    {
+     "gr": "θα γίνει",
+     "en": "he/she/it will become",
+     "note": "αυτός/αυτή/αυτό · present: γίνομαι (to become) · past: έγινε"
+    },
+    {
+     "gr": "θα γίνουμε",
+     "en": "we will become",
+     "note": "εμείς · present: γίνομαι (to become) · past: γίναμε"
+    },
+    {
+     "gr": "θα γίνετε",
+     "en": "you (pl.) will become",
+     "note": "εσείς · present: γίνομαι (to become) · past: γίνατε"
+    },
+    {
+     "gr": "θα γίνουν",
+     "en": "they will become",
+     "note": "αυτοί/αυτές/αυτά · present: γίνομαι (to become) · past: έγιναν"
+    },
+    {
+     "gr": "γράφω",
+     "en": "I write",
+     "note": "εγώ · present tense · past: έγραψα · future: θα γράψω"
+    },
+    {
+     "gr": "γράφεις",
+     "en": "you write",
+     "note": "εσύ · present tense · past: έγραψες · future: θα γράψεις"
+    },
+    {
+     "gr": "γράφει",
+     "en": "he/she/it writes",
+     "note": "αυτός/αυτή/αυτό · present tense · past: έγραψε · future: θα γράψει"
+    },
+    {
+     "gr": "γράφουμε",
+     "en": "we write",
+     "note": "εμείς · present tense · past: γράψαμε · future: θα γράψουμε"
+    },
+    {
+     "gr": "γράφετε",
+     "en": "you (pl.) write",
+     "note": "εσείς · present tense · past: γράψατε · future: θα γράψετε"
+    },
+    {
+     "gr": "γράφουν",
+     "en": "they write",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: έγραψαν · future: θα γράψουν"
+    },
+    {
+     "gr": "έγραψα",
+     "en": "I wrote",
+     "note": "εγώ · present: γράφω (to write) · future: θα γράψω"
+    },
+    {
+     "gr": "έγραψες",
+     "en": "you wrote",
+     "note": "εσύ · present: γράφω (to write) · future: θα γράψεις"
+    },
+    {
+     "gr": "έγραψε",
+     "en": "he/she/it wrote",
+     "note": "αυτός/αυτή/αυτό · present: γράφω (to write) · future: θα γράψει"
+    },
+    {
+     "gr": "γράψαμε",
+     "en": "we wrote",
+     "note": "εμείς · present: γράφω (to write) · future: θα γράψουμε"
+    },
+    {
+     "gr": "γράψατε",
+     "en": "you (pl.) wrote",
+     "note": "εσείς · present: γράφω (to write) · future: θα γράψετε"
+    },
+    {
+     "gr": "έγραψαν",
+     "en": "they wrote",
+     "note": "αυτοί/αυτές/αυτά · present: γράφω (to write) · future: θα γράψουν"
+    },
+    {
+     "gr": "θα γράψω",
+     "en": "I will write",
+     "note": "εγώ · present: γράφω (to write) · past: έγραψα"
+    },
+    {
+     "gr": "θα γράψεις",
+     "en": "you will write",
+     "note": "εσύ · present: γράφω (to write) · past: έγραψες"
+    },
+    {
+     "gr": "θα γράψει",
+     "en": "he/she/it will write",
+     "note": "αυτός/αυτή/αυτό · present: γράφω (to write) · past: έγραψε"
+    },
+    {
+     "gr": "θα γράψουμε",
+     "en": "we will write",
+     "note": "εμείς · present: γράφω (to write) · past: γράψαμε"
+    },
+    {
+     "gr": "θα γράψετε",
+     "en": "you (pl.) will write",
+     "note": "εσείς · present: γράφω (to write) · past: γράψατε"
+    },
+    {
+     "gr": "θα γράψουν",
+     "en": "they will write",
+     "note": "αυτοί/αυτές/αυτά · present: γράφω (to write) · past: έγραψαν"
+    },
+    {
+     "gr": "διαβάζω",
+     "en": "I read / study",
+     "note": "εγώ · present tense · past: διάβασα · future: θα διαβάσω"
+    },
+    {
+     "gr": "διαβάζεις",
+     "en": "you read / study",
+     "note": "εσύ · present tense · past: διάβασες · future: θα διαβάσεις"
+    },
+    {
+     "gr": "διαβάζει",
+     "en": "he/she/it reads / studies",
+     "note": "αυτός/αυτή/αυτό · present tense · past: διάβασε · future: θα διαβάσει"
+    },
+    {
+     "gr": "διαβάζουμε",
+     "en": "we read / study",
+     "note": "εμείς · present tense · past: διαβάσαμε · future: θα διαβάσουμε"
+    },
+    {
+     "gr": "διαβάζετε",
+     "en": "you (pl.) read / study",
+     "note": "εσείς · present tense · past: διαβάσατε · future: θα διαβάσετε"
+    },
+    {
+     "gr": "διαβάζουν",
+     "en": "they read / study",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: διάβασαν · future: θα διαβάσουν"
+    },
+    {
+     "gr": "διάβασα",
+     "en": "I read / studied",
+     "note": "εγώ · present: διαβάζω (to read / study) · future: θα διαβάσω"
+    },
+    {
+     "gr": "διάβασες",
+     "en": "you read / studied",
+     "note": "εσύ · present: διαβάζω (to read / study) · future: θα διαβάσεις"
+    },
+    {
+     "gr": "διάβασε",
+     "en": "he/she/it read / studied",
+     "note": "αυτός/αυτή/αυτό · present: διαβάζω (to read / study) · future: θα διαβάσει"
+    },
+    {
+     "gr": "διαβάσαμε",
+     "en": "we read / studied",
+     "note": "εμείς · present: διαβάζω (to read / study) · future: θα διαβάσουμε"
+    },
+    {
+     "gr": "διαβάσατε",
+     "en": "you (pl.) read / studied",
+     "note": "εσείς · present: διαβάζω (to read / study) · future: θα διαβάσετε"
+    },
+    {
+     "gr": "διάβασαν",
+     "en": "they read / studied",
+     "note": "αυτοί/αυτές/αυτά · present: διαβάζω (to read / study) · future: θα διαβάσουν"
+    },
+    {
+     "gr": "θα διαβάσω",
+     "en": "I will read / study",
+     "note": "εγώ · present: διαβάζω (to read / study) · past: διάβασα"
+    },
+    {
+     "gr": "θα διαβάσεις",
+     "en": "you will read / study",
+     "note": "εσύ · present: διαβάζω (to read / study) · past: διάβασες"
+    },
+    {
+     "gr": "θα διαβάσει",
+     "en": "he/she/it will read / study",
+     "note": "αυτός/αυτή/αυτό · present: διαβάζω (to read / study) · past: διάβασε"
+    },
+    {
+     "gr": "θα διαβάσουμε",
+     "en": "we will read / study",
+     "note": "εμείς · present: διαβάζω (to read / study) · past: διαβάσαμε"
+    },
+    {
+     "gr": "θα διαβάσετε",
+     "en": "you (pl.) will read / study",
+     "note": "εσείς · present: διαβάζω (to read / study) · past: διαβάσατε"
+    },
+    {
+     "gr": "θα διαβάσουν",
+     "en": "they will read / study",
+     "note": "αυτοί/αυτές/αυτά · present: διαβάζω (to read / study) · past: διάβασαν"
+    },
+    {
+     "gr": "μιλάω",
+     "en": "I speak",
+     "note": "εγώ · present tense · past: μίλησα · future: θα μιλήσω"
+    },
+    {
+     "gr": "μιλάς",
+     "en": "you speak",
+     "note": "εσύ · present tense · past: μίλησες · future: θα μιλήσεις"
+    },
+    {
+     "gr": "μιλάει",
+     "en": "he/she/it speaks",
+     "note": "αυτός/αυτή/αυτό · present tense · past: μίλησε · future: θα μιλήσει"
+    },
+    {
+     "gr": "μιλάμε",
+     "en": "we speak",
+     "note": "εμείς · present tense · past: μιλήσαμε · future: θα μιλήσουμε"
+    },
+    {
+     "gr": "μιλάτε",
+     "en": "you (pl.) speak",
+     "note": "εσείς · present tense · past: μιλήσατε · future: θα μιλήσετε"
+    },
+    {
+     "gr": "μιλάνε",
+     "en": "they speak",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: μίλησαν · future: θα μιλήσουν"
+    },
+    {
+     "gr": "μίλησα",
+     "en": "I spoke",
+     "note": "εγώ · present: μιλάω (to speak) · future: θα μιλήσω"
+    },
+    {
+     "gr": "μίλησες",
+     "en": "you spoke",
+     "note": "εσύ · present: μιλάω (to speak) · future: θα μιλήσεις"
+    },
+    {
+     "gr": "μίλησε",
+     "en": "he/she/it spoke",
+     "note": "αυτός/αυτή/αυτό · present: μιλάω (to speak) · future: θα μιλήσει"
+    },
+    {
+     "gr": "μιλήσαμε",
+     "en": "we spoke",
+     "note": "εμείς · present: μιλάω (to speak) · future: θα μιλήσουμε"
+    },
+    {
+     "gr": "μιλήσατε",
+     "en": "you (pl.) spoke",
+     "note": "εσείς · present: μιλάω (to speak) · future: θα μιλήσετε"
+    },
+    {
+     "gr": "μίλησαν",
+     "en": "they spoke",
+     "note": "αυτοί/αυτές/αυτά · present: μιλάω (to speak) · future: θα μιλήσουν"
+    },
+    {
+     "gr": "θα μιλήσω",
+     "en": "I will speak",
+     "note": "εγώ · present: μιλάω (to speak) · past: μίλησα"
+    },
+    {
+     "gr": "θα μιλήσεις",
+     "en": "you will speak",
+     "note": "εσύ · present: μιλάω (to speak) · past: μίλησες"
+    },
+    {
+     "gr": "θα μιλήσει",
+     "en": "he/she/it will speak",
+     "note": "αυτός/αυτή/αυτό · present: μιλάω (to speak) · past: μίλησε"
+    },
+    {
+     "gr": "θα μιλήσουμε",
+     "en": "we will speak",
+     "note": "εμείς · present: μιλάω (to speak) · past: μιλήσαμε"
+    },
+    {
+     "gr": "θα μιλήσετε",
+     "en": "you (pl.) will speak",
+     "note": "εσείς · present: μιλάω (to speak) · past: μιλήσατε"
+    },
+    {
+     "gr": "θα μιλήσουν",
+     "en": "they will speak",
+     "note": "αυτοί/αυτές/αυτά · present: μιλάω (to speak) · past: μίλησαν"
+    },
+    {
+     "gr": "ακούω",
+     "en": "I hear",
+     "note": "εγώ · present tense · past: άκουσα · future: θα ακούσω"
+    },
+    {
+     "gr": "ακούς",
+     "en": "you hear",
+     "note": "εσύ · present tense · past: άκουσες · future: θα ακούσεις"
+    },
+    {
+     "gr": "ακούει",
+     "en": "he/she/it hears",
+     "note": "αυτός/αυτή/αυτό · present tense · past: άκουσε · future: θα ακούσει"
+    },
+    {
+     "gr": "ακούμε",
+     "en": "we hear",
+     "note": "εμείς · present tense · past: ακούσαμε · future: θα ακούσουμε"
+    },
+    {
+     "gr": "ακούτε",
+     "en": "you (pl.) hear",
+     "note": "εσείς · present tense · past: ακούσατε · future: θα ακούσετε"
+    },
+    {
+     "gr": "ακούνε",
+     "en": "they hear",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: άκουσαν · future: θα ακούσουν"
+    },
+    {
+     "gr": "άκουσα",
+     "en": "I heard",
+     "note": "εγώ · present: ακούω (to hear) · future: θα ακούσω"
+    },
+    {
+     "gr": "άκουσες",
+     "en": "you heard",
+     "note": "εσύ · present: ακούω (to hear) · future: θα ακούσεις"
+    },
+    {
+     "gr": "άκουσε",
+     "en": "he/she/it heard",
+     "note": "αυτός/αυτή/αυτό · present: ακούω (to hear) · future: θα ακούσει"
+    },
+    {
+     "gr": "ακούσαμε",
+     "en": "we heard",
+     "note": "εμείς · present: ακούω (to hear) · future: θα ακούσουμε"
+    },
+    {
+     "gr": "ακούσατε",
+     "en": "you (pl.) heard",
+     "note": "εσείς · present: ακούω (to hear) · future: θα ακούσετε"
+    },
+    {
+     "gr": "άκουσαν",
+     "en": "they heard",
+     "note": "αυτοί/αυτές/αυτά · present: ακούω (to hear) · future: θα ακούσουν"
+    },
+    {
+     "gr": "θα ακούσω",
+     "en": "I will hear",
+     "note": "εγώ · present: ακούω (to hear) · past: άκουσα"
+    },
+    {
+     "gr": "θα ακούσεις",
+     "en": "you will hear",
+     "note": "εσύ · present: ακούω (to hear) · past: άκουσες"
+    },
+    {
+     "gr": "θα ακούσει",
+     "en": "he/she/it will hear",
+     "note": "αυτός/αυτή/αυτό · present: ακούω (to hear) · past: άκουσε"
+    },
+    {
+     "gr": "θα ακούσουμε",
+     "en": "we will hear",
+     "note": "εμείς · present: ακούω (to hear) · past: ακούσαμε"
+    },
+    {
+     "gr": "θα ακούσετε",
+     "en": "you (pl.) will hear",
+     "note": "εσείς · present: ακούω (to hear) · past: ακούσατε"
+    },
+    {
+     "gr": "θα ακούσουν",
+     "en": "they will hear",
+     "note": "αυτοί/αυτές/αυτά · present: ακούω (to hear) · past: άκουσαν"
+    },
+    {
+     "gr": "αγοράζω",
+     "en": "I buy",
+     "note": "εγώ · present tense · past: αγόρασα · future: θα αγοράσω"
+    },
+    {
+     "gr": "αγοράζεις",
+     "en": "you buy",
+     "note": "εσύ · present tense · past: αγόρασες · future: θα αγοράσεις"
+    },
+    {
+     "gr": "αγοράζει",
+     "en": "he/she/it buys",
+     "note": "αυτός/αυτή/αυτό · present tense · past: αγόρασε · future: θα αγοράσει"
+    },
+    {
+     "gr": "αγοράζουμε",
+     "en": "we buy",
+     "note": "εμείς · present tense · past: αγοράσαμε · future: θα αγοράσουμε"
+    },
+    {
+     "gr": "αγοράζετε",
+     "en": "you (pl.) buy",
+     "note": "εσείς · present tense · past: αγοράσατε · future: θα αγοράσετε"
+    },
+    {
+     "gr": "αγοράζουν",
+     "en": "they buy",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: αγόρασαν · future: θα αγοράσουν"
+    },
+    {
+     "gr": "αγόρασα",
+     "en": "I bought",
+     "note": "εγώ · present: αγοράζω (to buy) · future: θα αγοράσω"
+    },
+    {
+     "gr": "αγόρασες",
+     "en": "you bought",
+     "note": "εσύ · present: αγοράζω (to buy) · future: θα αγοράσεις"
+    },
+    {
+     "gr": "αγόρασε",
+     "en": "he/she/it bought",
+     "note": "αυτός/αυτή/αυτό · present: αγοράζω (to buy) · future: θα αγοράσει"
+    },
+    {
+     "gr": "αγοράσαμε",
+     "en": "we bought",
+     "note": "εμείς · present: αγοράζω (to buy) · future: θα αγοράσουμε"
+    },
+    {
+     "gr": "αγοράσατε",
+     "en": "you (pl.) bought",
+     "note": "εσείς · present: αγοράζω (to buy) · future: θα αγοράσετε"
+    },
+    {
+     "gr": "αγόρασαν",
+     "en": "they bought",
+     "note": "αυτοί/αυτές/αυτά · present: αγοράζω (to buy) · future: θα αγοράσουν"
+    },
+    {
+     "gr": "θα αγοράσω",
+     "en": "I will buy",
+     "note": "εγώ · present: αγοράζω (to buy) · past: αγόρασα"
+    },
+    {
+     "gr": "θα αγοράσεις",
+     "en": "you will buy",
+     "note": "εσύ · present: αγοράζω (to buy) · past: αγόρασες"
+    },
+    {
+     "gr": "θα αγοράσει",
+     "en": "he/she/it will buy",
+     "note": "αυτός/αυτή/αυτό · present: αγοράζω (to buy) · past: αγόρασε"
+    },
+    {
+     "gr": "θα αγοράσουμε",
+     "en": "we will buy",
+     "note": "εμείς · present: αγοράζω (to buy) · past: αγοράσαμε"
+    },
+    {
+     "gr": "θα αγοράσετε",
+     "en": "you (pl.) will buy",
+     "note": "εσείς · present: αγοράζω (to buy) · past: αγοράσατε"
+    },
+    {
+     "gr": "θα αγοράσουν",
+     "en": "they will buy",
+     "note": "αυτοί/αυτές/αυτά · present: αγοράζω (to buy) · past: αγόρασαν"
+    },
+    {
+     "gr": "ρωτάω",
+     "en": "I ask",
+     "note": "εγώ · present tense · past: ρώτησα · future: θα ρωτήσω"
+    },
+    {
+     "gr": "ρωτάς",
+     "en": "you ask",
+     "note": "εσύ · present tense · past: ρώτησες · future: θα ρωτήσεις"
+    },
+    {
+     "gr": "ρωτάει",
+     "en": "he/she/it asks",
+     "note": "αυτός/αυτή/αυτό · present tense · past: ρώτησε · future: θα ρωτήσει"
+    },
+    {
+     "gr": "ρωτάμε",
+     "en": "we ask",
+     "note": "εμείς · present tense · past: ρωτήσαμε · future: θα ρωτήσουμε"
+    },
+    {
+     "gr": "ρωτάτε",
+     "en": "you (pl.) ask",
+     "note": "εσείς · present tense · past: ρωτήσατε · future: θα ρωτήσετε"
+    },
+    {
+     "gr": "ρωτάνε",
+     "en": "they ask",
+     "note": "αυτοί/αυτές/αυτά · present tense · past: ρώτησαν · future: θα ρωτήσουν"
+    },
+    {
+     "gr": "ρώτησα",
+     "en": "I asked",
+     "note": "εγώ · present: ρωτάω (to ask) · future: θα ρωτήσω"
+    },
+    {
+     "gr": "ρώτησες",
+     "en": "you asked",
+     "note": "εσύ · present: ρωτάω (to ask) · future: θα ρωτήσεις"
+    },
+    {
+     "gr": "ρώτησε",
+     "en": "he/she/it asked",
+     "note": "αυτός/αυτή/αυτό · present: ρωτάω (to ask) · future: θα ρωτήσει"
+    },
+    {
+     "gr": "ρωτήσαμε",
+     "en": "we asked",
+     "note": "εμείς · present: ρωτάω (to ask) · future: θα ρωτήσουμε"
+    },
+    {
+     "gr": "ρωτήσατε",
+     "en": "you (pl.) asked",
+     "note": "εσείς · present: ρωτάω (to ask) · future: θα ρωτήσετε"
+    },
+    {
+     "gr": "ρώτησαν",
+     "en": "they asked",
+     "note": "αυτοί/αυτές/αυτά · present: ρωτάω (to ask) · future: θα ρωτήσουν"
+    },
+    {
+     "gr": "θα ρωτήσω",
+     "en": "I will ask",
+     "note": "εγώ · present: ρωτάω (to ask) · past: ρώτησα"
+    },
+    {
+     "gr": "θα ρωτήσεις",
+     "en": "you will ask",
+     "note": "εσύ · present: ρωτάω (to ask) · past: ρώτησες"
+    },
+    {
+     "gr": "θα ρωτήσει",
+     "en": "he/she/it will ask",
+     "note": "αυτός/αυτή/αυτό · present: ρωτάω (to ask) · past: ρώτησε"
+    },
+    {
+     "gr": "θα ρωτήσουμε",
+     "en": "we will ask",
+     "note": "εμείς · present: ρωτάω (to ask) · past: ρωτήσαμε"
+    },
+    {
+     "gr": "θα ρωτήσετε",
+     "en": "you (pl.) will ask",
+     "note": "εσείς · present: ρωτάω (to ask) · past: ρωτήσατε"
+    },
+    {
+     "gr": "θα ρωτήσουν",
+     "en": "they will ask",
+     "note": "αυτοί/αυτές/αυτά · present: ρωτάω (to ask) · past: ρώτησαν"
+    }
+   ]
+  },
+  "body_parts": {
+   "label": "Body Parts",
+   "words": [
+    {
+     "gr": "το κεφάλι",
+     "en": "head",
+     "note": "neuter"
+    },
+    {
+     "gr": "το πρόσωπο",
+     "en": "face",
+     "note": "neuter"
+    },
+    {
+     "gr": "τα μαλλιά",
+     "en": "hair",
+     "note": "neuter, plural"
+    },
+    {
+     "gr": "το μάτι (pl. τα μάτια)",
+     "en": "eye(s)",
+     "note": "neuter"
+    },
+    {
+     "gr": "το αυτί (pl. τα αυτιά)",
+     "en": "ear(s)",
+     "note": "neuter"
+    },
+    {
+     "gr": "η μύτη",
+     "en": "nose",
+     "note": "feminine"
+    },
+    {
+     "gr": "το στόμα",
+     "en": "mouth",
+     "note": "neuter"
+    },
+    {
+     "gr": "το δόντι (pl. τα δόντια)",
+     "en": "tooth / teeth",
+     "note": "neuter"
+    },
+    {
+     "gr": "η γλώσσα",
+     "en": "tongue",
+     "note": "feminine"
+    },
+    {
+     "gr": "το φρύδι (pl. τα φρύδια)",
+     "en": "eyebrow(s)",
+     "note": "neuter"
+    },
+    {
+     "gr": "ο λαιμός",
+     "en": "neck",
+     "note": "masculine"
+    },
+    {
+     "gr": "ο ώμος",
+     "en": "shoulder",
+     "note": "masculine"
+    },
+    {
+     "gr": "το χέρι (pl. τα χέρια)",
+     "en": "hand / arm",
+     "note": "neuter"
+    },
+    {
+     "gr": "ο αγκώνας",
+     "en": "elbow",
+     "note": "masculine"
+    },
+    {
+     "gr": "ο καρπός",
+     "en": "wrist",
+     "note": "masculine"
+    },
+    {
+     "gr": "το δάχτυλο (pl. τα δάχτυλα)",
+     "en": "finger(s)",
+     "note": "neuter"
+    },
+    {
+     "gr": "το στήθος",
+     "en": "chest",
+     "note": "neuter"
+    },
+    {
+     "gr": "η πλάτη",
+     "en": "back",
+     "note": "feminine"
+    },
+    {
+     "gr": "η κοιλιά",
+     "en": "stomach / belly",
+     "note": "feminine"
+    },
+    {
+     "gr": "η μέση",
+     "en": "waist",
+     "note": "feminine"
+    },
+    {
+     "gr": "το πόδι (pl. τα πόδια)",
+     "en": "leg / foot",
+     "note": "neuter"
+    },
+    {
+     "gr": "το γόνατο",
+     "en": "knee",
+     "note": "neuter"
+    },
+    {
+     "gr": "ο αστράγαλος",
+     "en": "ankle",
+     "note": "masculine"
+    },
+    {
+     "gr": "η καρδιά",
+     "en": "heart",
+     "note": "feminine"
+    }
+   ]
+  },
+  "fruits_vegetables": {
+   "label": "Fruits & Vegetables",
+   "words": [
+    {
+     "gr": "το μήλο",
+     "en": "apple",
+     "note": "neuter"
+    },
+    {
+     "gr": "το πορτοκάλι",
+     "en": "orange",
+     "note": "neuter"
+    },
+    {
+     "gr": "η μπανάνα",
+     "en": "banana",
+     "note": "feminine"
+    },
+    {
+     "gr": "το σταφύλι (pl. τα σταφύλια)",
+     "en": "grape(s)",
+     "note": "neuter"
+    },
+    {
+     "gr": "το καρπούζι",
+     "en": "watermelon",
+     "note": "neuter"
+    },
+    {
+     "gr": "το πεπόνι",
+     "en": "melon",
+     "note": "neuter"
+    },
+    {
+     "gr": "το λεμόνι",
+     "en": "lemon",
+     "note": "neuter"
+    },
+    {
+     "gr": "το ροδάκινο",
+     "en": "peach",
+     "note": "neuter"
+    },
+    {
+     "gr": "το βερίκοκο",
+     "en": "apricot",
+     "note": "neuter"
+    },
+    {
+     "gr": "το αχλάδι",
+     "en": "pear",
+     "note": "neuter"
+    },
+    {
+     "gr": "η φράουλα",
+     "en": "strawberry",
+     "note": "feminine"
+    },
+    {
+     "gr": "το κεράσι",
+     "en": "cherry",
+     "note": "neuter"
+    },
+    {
+     "gr": "το ακτινίδιο",
+     "en": "kiwi",
+     "note": "neuter"
+    },
+    {
+     "gr": "ο ανανάς",
+     "en": "pineapple",
+     "note": "masculine"
+    },
+    {
+     "gr": "το σύκο",
+     "en": "fig",
+     "note": "neuter"
+    },
+    {
+     "gr": "η ντομάτα",
+     "en": "tomato",
+     "note": "feminine"
+    },
+    {
+     "gr": "η πατάτα",
+     "en": "potato",
+     "note": "feminine"
+    },
+    {
+     "gr": "το κρεμμύδι",
+     "en": "onion",
+     "note": "neuter"
+    },
+    {
+     "gr": "το σκόρδο",
+     "en": "garlic",
+     "note": "neuter"
+    },
+    {
+     "gr": "το καρότο",
+     "en": "carrot",
+     "note": "neuter"
+    },
+    {
+     "gr": "η πιπεριά",
+     "en": "pepper (vegetable)",
+     "note": "feminine"
+    },
+    {
+     "gr": "το αγγούρι",
+     "en": "cucumber",
+     "note": "neuter"
+    },
+    {
+     "gr": "η μελιτζάνα",
+     "en": "eggplant",
+     "note": "feminine"
+    },
+    {
+     "gr": "το κολοκύθι",
+     "en": "zucchini",
+     "note": "neuter"
+    },
+    {
+     "gr": "το μαρούλι",
+     "en": "lettuce",
+     "note": "neuter"
+    },
+    {
+     "gr": "το λάχανο",
+     "en": "cabbage",
+     "note": "neuter"
+    },
+    {
+     "gr": "το σπανάκι",
+     "en": "spinach",
+     "note": "neuter"
+    },
+    {
+     "gr": "το μπρόκολο",
+     "en": "broccoli",
+     "note": "neuter"
+    },
+    {
+     "gr": "το φασόλι (pl. τα φασόλια)",
+     "en": "bean(s)",
+     "note": "neuter"
+    },
+    {
+     "gr": "ο μαϊντανός",
+     "en": "parsley",
+     "note": "masculine"
+    }
+   ]
+  }
+ },
+ "PRESENT_VERBS": [
+  {
+   "gr": "σηκώνομαι",
+   "enBase": "get up",
+   "en3rd": "gets up",
+   "pat": "-ομαι",
+   "f": [
+    "σηκώνομαι",
+    "σηκώνεσαι",
+    "σηκώνεται",
+    "σηκωνόμαστε",
+    "σηκώνεστε",
+    "σηκώνονται"
+   ]
+  },
+  {
+   "gr": "ντύνομαι",
+   "enBase": "get dressed",
+   "en3rd": "gets dressed",
+   "pat": "-ομαι",
+   "f": [
+    "ντύνομαι",
+    "ντύνεσαι",
+    "ντύνεται",
+    "ντυνόμαστε",
+    "ντύνεστε",
+    "ντύνονται"
+   ]
+  },
+  {
+   "gr": "πλένομαι",
+   "enBase": "wash up",
+   "en3rd": "washes up",
+   "pat": "-ομαι",
+   "f": [
+    "πλένομαι",
+    "πλένεσαι",
+    "πλένεται",
+    "πλενόμαστε",
+    "πλένεστε",
+    "πλένονται"
+   ]
+  },
+  {
+   "gr": "χτενίζομαι",
+   "enBase": "comb my hair",
+   "en3rd": "combs their hair",
+   "pat": "-ομαι",
+   "f": [
+    "χτενίζομαι",
+    "χτενίζεσαι",
+    "χτενίζεται",
+    "χτενιζόμαστε",
+    "χτενίζεστε",
+    "χτενίζονται"
+   ]
+  },
+  {
+   "gr": "ετοιμάζομαι",
+   "enBase": "get ready",
+   "en3rd": "gets ready",
+   "pat": "-ομαι",
+   "f": [
+    "ετοιμάζομαι",
+    "ετοιμάζεσαι",
+    "ετοιμάζεται",
+    "ετοιμαζόμαστε",
+    "ετοιμάζεστε",
+    "ετοιμάζονται"
+   ]
+  },
+  {
+   "gr": "κάθομαι",
+   "enBase": "sit",
+   "en3rd": "sits",
+   "pat": "-ομαι",
+   "f": [
+    "κάθομαι",
+    "κάθεσαι",
+    "κάθεται",
+    "καθόμαστε",
+    "κάθεστε",
+    "κάθονται"
+   ]
+  },
+  {
+   "gr": "σκέφτομαι",
+   "enBase": "think",
+   "en3rd": "thinks",
+   "pat": "-ομαι",
+   "f": [
+    "σκέφτομαι",
+    "σκέφτεσαι",
+    "σκέφτεται",
+    "σκεφτόμαστε",
+    "σκέφτεστε",
+    "σκέφτονται"
+   ]
+  },
+  {
+   "gr": "αισθάνομαι",
+   "enBase": "feel",
+   "en3rd": "feels",
+   "pat": "-ομαι",
+   "f": [
+    "αισθάνομαι",
+    "αισθάνεσαι",
+    "αισθάνεται",
+    "αισθανόμαστε",
+    "αισθάνεστε",
+    "αισθάνονται"
+   ]
+  },
+  {
+   "gr": "φαίνομαι",
+   "enBase": "seem",
+   "en3rd": "seems",
+   "pat": "-ομαι",
+   "f": [
+    "φαίνομαι",
+    "φαίνεσαι",
+    "φαίνεται",
+    "φαινόμαστε",
+    "φαίνεστε",
+    "φαίνονται"
+   ]
+  },
+  {
+   "gr": "βρίσκομαι",
+   "enBase": "am located",
+   "en3rd": "is located",
+   "pat": "-ομαι",
+   "enForms": [
+    "am located",
+    "are located",
+    "is located",
+    "are located",
+    "are located",
+    "are located"
+   ],
+   "f": [
+    "βρίσκομαι",
+    "βρίσκεσαι",
+    "βρίσκεται",
+    "βρισκόμαστε",
+    "βρίσκεστε",
+    "βρίσκονται"
+   ]
+  },
+  {
+   "gr": "εργάζομαι",
+   "enBase": "work",
+   "en3rd": "works",
+   "pat": "-ομαι",
+   "f": [
+    "εργάζομαι",
+    "εργάζεσαι",
+    "εργάζεται",
+    "εργαζόμαστε",
+    "εργάζεστε",
+    "εργάζονται"
+   ]
+  },
+  {
+   "gr": "χρειάζομαι",
+   "enBase": "need",
+   "en3rd": "needs",
+   "pat": "-ομαι",
+   "f": [
+    "χρειάζομαι",
+    "χρειάζεσαι",
+    "χρειάζεται",
+    "χρειαζόμαστε",
+    "χρειάζεστε",
+    "χρειάζονται"
+   ]
+  },
+  {
+   "gr": "δέχομαι",
+   "enBase": "accept",
+   "en3rd": "accepts",
+   "pat": "-ομαι",
+   "f": [
+    "δέχομαι",
+    "δέχεσαι",
+    "δέχεται",
+    "δεχόμαστε",
+    "δέχεστε",
+    "δέχονται"
+   ]
+  },
+  {
+   "gr": "ενδιαφέρομαι",
+   "enBase": "am interested",
+   "en3rd": "is interested",
+   "pat": "-ομαι",
+   "enForms": [
+    "am interested",
+    "are interested",
+    "is interested",
+    "are interested",
+    "are interested",
+    "are interested"
+   ],
+   "f": [
+    "ενδιαφέρομαι",
+    "ενδιαφέρεσαι",
+    "ενδιαφέρεται",
+    "ενδιαφερόμαστε",
+    "ενδιαφέρεστε",
+    "ενδιαφέρονται"
+   ]
+  },
+  {
+   "gr": "επισκέπτομαι",
+   "enBase": "visit",
+   "en3rd": "visits",
+   "pat": "-ομαι",
+   "f": [
+    "επισκέπτομαι",
+    "επισκέπτεσαι",
+    "επισκέπτεται",
+    "επισκεπτόμαστε",
+    "επισκέπτεστε",
+    "επισκέπτονται"
+   ]
+  },
+  {
+   "gr": "παντρεύομαι",
+   "enBase": "get married",
+   "en3rd": "gets married",
+   "pat": "-ομαι",
+   "f": [
+    "παντρεύομαι",
+    "παντρεύεσαι",
+    "παντρεύεται",
+    "παντρευόμαστε",
+    "παντρεύεστε",
+    "παντρεύονται"
+   ]
+  },
+  {
+   "gr": "ονειρεύομαι",
+   "enBase": "dream",
+   "en3rd": "dreams",
+   "pat": "-ομαι",
+   "f": [
+    "ονειρεύομαι",
+    "ονειρεύεσαι",
+    "ονειρεύεται",
+    "ονειρευόμαστε",
+    "ονειρεύεστε",
+    "ονειρεύονται"
+   ]
+  },
+  {
+   "gr": "ντρέπομαι",
+   "enBase": "am embarrassed",
+   "en3rd": "is embarrassed",
+   "pat": "-ομαι",
+   "enForms": [
+    "am embarrassed",
+    "are embarrassed",
+    "is embarrassed",
+    "are embarrassed",
+    "are embarrassed",
+    "are embarrassed"
+   ],
+   "f": [
+    "ντρέπομαι",
+    "ντρέπεσαι",
+    "ντρέπεται",
+    "ντρεπόμαστε",
+    "ντρέπεστε",
+    "ντρέπονται"
+   ]
+  },
+  {
+   "gr": "κουράζομαι",
+   "enBase": "get tired",
+   "en3rd": "gets tired",
+   "pat": "-ομαι",
+   "f": [
+    "κουράζομαι",
+    "κουράζεσαι",
+    "κουράζεται",
+    "κουραζόμαστε",
+    "κουράζεστε",
+    "κουράζονται"
+   ]
+  },
+  {
+   "gr": "ξεκουράζομαι",
+   "enBase": "rest",
+   "en3rd": "rests",
+   "pat": "-ομαι",
+   "f": [
+    "ξεκουράζομαι",
+    "ξεκουράζεσαι",
+    "ξεκουράζεται",
+    "ξεκουραζόμαστε",
+    "ξεκουράζεστε",
+    "ξεκουράζονται"
+   ]
+  },
+  {
+   "gr": "στενοχωριέμαι",
+   "enBase": "am upset",
+   "en3rd": "is upset",
+   "pat": "-ιέμαι",
+   "enForms": [
+    "am upset",
+    "are upset",
+    "is upset",
+    "are upset",
+    "are upset",
+    "are upset"
+   ],
+   "f": [
+    "στενοχωριέμαι",
+    "στενοχωριέσαι",
+    "στενοχωριέται",
+    "στενοχωριόμαστε",
+    "στενοχωριέστε",
+    "στενοχωριούνται"
+   ]
+  },
+  {
+   "gr": "κοιμάμαι",
+   "enBase": "sleep",
+   "en3rd": "sleeps",
+   "pat": "-άμαι",
+   "f": [
+    "κοιμάμαι",
+    "κοιμάσαι",
+    "κοιμάται",
+    "κοιμόμαστε",
+    "κοιμάστε",
+    "κοιμούνται"
+   ]
+  },
+  {
+   "gr": "θυμάμαι",
+   "enBase": "remember",
+   "en3rd": "remembers",
+   "pat": "-άμαι",
+   "f": [
+    "θυμάμαι",
+    "θυμάσαι",
+    "θυμάται",
+    "θυμόμαστε",
+    "θυμάστε",
+    "θυμούνται"
+   ]
+  },
+  {
+   "gr": "λυπάμαι",
+   "enBase": "am sorry",
+   "en3rd": "is sorry",
+   "pat": "-άμαι",
+   "enForms": [
+    "am sorry",
+    "are sorry",
+    "is sorry",
+    "are sorry",
+    "are sorry",
+    "are sorry"
+   ],
+   "f": [
+    "λυπάμαι",
+    "λυπάσαι",
+    "λυπάται",
+    "λυπόμαστε",
+    "λυπάστε",
+    "λυπούνται"
+   ]
+  },
+  {
+   "gr": "φοβάμαι",
+   "enBase": "am afraid",
+   "en3rd": "is afraid",
+   "pat": "-άμαι",
+   "enForms": [
+    "am afraid",
+    "are afraid",
+    "is afraid",
+    "are afraid",
+    "are afraid",
+    "are afraid"
+   ],
+   "f": [
+    "φοβάμαι",
+    "φοβάσαι",
+    "φοβάται",
+    "φοβόμαστε",
+    "φοβάστε",
+    "φοβούνται"
+   ]
+  },
+  {
+   "gr": "ασχολούμαι",
+   "enBase": "am occupied with",
+   "en3rd": "is occupied with",
+   "pat": "-ούμαι",
+   "enForms": [
+    "am occupied with",
+    "are occupied with",
+    "is occupied with",
+    "are occupied with",
+    "are occupied with",
+    "are occupied with"
+   ],
+   "f": [
+    "ασχολούμαι",
+    "ασχολείσαι",
+    "ασχολείται",
+    "ασχολούμαστε",
+    "ασχολείστε",
+    "ασχολούνται"
+   ]
+  },
+  {
+   "gr": "αρνούμαι",
+   "enBase": "refuse",
+   "en3rd": "refuses",
+   "pat": "-ούμαι",
+   "f": [
+    "αρνούμαι",
+    "αρνείσαι",
+    "αρνείται",
+    "αρνούμαστε",
+    "αρνείστε",
+    "αρνούνται"
+   ]
+  },
+  {
+   "gr": "διηγούμαι",
+   "enBase": "narrate",
+   "en3rd": "narrates",
+   "pat": "-ούμαι",
+   "f": [
+    "διηγούμαι",
+    "διηγείσαι",
+    "διηγείται",
+    "διηγούμαστε",
+    "διηγείστε",
+    "διηγούνται"
+   ]
+  },
+  {
+   "gr": "αποτελούμαι",
+   "enBase": "consist of",
+   "en3rd": "consists of",
+   "pat": "-ούμαι",
+   "f": [
+    "αποτελούμαι",
+    "αποτελείσαι",
+    "αποτελείται",
+    "αποτελούμαστε",
+    "αποτελείστε",
+    "αποτελούνται"
+   ]
+  },
+  {
+   "gr": "θεωρούμαι",
+   "enBase": "am considered",
+   "en3rd": "is considered",
+   "pat": "-ούμαι",
+   "enForms": [
+    "am considered",
+    "are considered",
+    "is considered",
+    "are considered",
+    "are considered",
+    "are considered"
+   ],
+   "f": [
+    "θεωρούμαι",
+    "θεωρείσαι",
+    "θεωρείται",
+    "θεωρούμαστε",
+    "θεωρείστε",
+    "θεωρούνται"
+   ]
+  },
+  {
+   "gr": "προσποιούμαι",
+   "enBase": "pretend",
+   "en3rd": "pretends",
+   "pat": "-ούμαι",
+   "f": [
+    "προσποιούμαι",
+    "προσποιείσαι",
+    "προσποιείται",
+    "προσποιούμαστε",
+    "προσποιείστε",
+    "προσποιούνται"
+   ]
+  }
+ ]
+};
+const PERSONS=DATA.PERSONS, VERBS=DATA.PAST_FUTURE_VERBS, DB=DATA.VOCAB_DB;
+
+/* ===================== ATTRIBUTES ===================== */
+const PERSON_TAGS=['εγώ','εσύ','αυτός','εμείς','εσείς','αυτοί'];
+const IRREGULAR=new Set(['είμαι','τρώω','πίνω','πάω','βλέπω','λέω','έρχομαι','βγαίνω',
+  'φεύγω','παίρνω','δίνω','βρίσκω','μπαίνω','γίνομαι']);
+const CONTRACT=new Set(['μιλάω','ρωτάω']);
+const SECTION_TYPE={rooms:'noun',furniture:'noun',appliances:'noun',household_items:'noun',
+  structure:'noun',prepositions:'preposition',body_parts:'noun',fruits_vegetables:'noun'};
+const Z5_TYPE={
+  'το δάσος':'noun','το τρέξιμο':'noun','η λίμνη':'noun','το πουλί (pl. τα πουλιά)':'noun',
+  'προτείνω':'verb','προτιμώ':'verb','ήσυχα':'adverb','σιγά σιγά':'adverb',
+  'το ποδήλατο':'noun','κάνω ποδήλατο':'phrase','το δέντρο':'noun','κουράζομαι':'verb',
+  'είμαι κουρασμένος/-η':'phrase','ξεκουράζομαι':'verb','ξεκουράζω':'verb','γελάω':'verb',
+  'η ταινία':'noun','μυρίζω':'verb','ο κόσμος':'noun','το κολύμπι':'noun','η έκθεση':'noun',
+  'ο τουρίστας / η τουρίστρια':'noun','ο τουρισμός':'noun','οι άνθρωποι':'noun',
+  'μερικοί άνθρωποι':'phrase','προχωράω':'verb','πάμε παρακάτω;':'phrase',
+  'η δραστηριότητα':'noun','σχεδόν':'adverb','η κωπηλασία':'noun','το γόνατο':'noun',
+  'η πλάτη':'noun','η ξιφασκία':'noun','ο μοντέρνος χορός':'noun',
+  'ο δάσκαλος / η δασκάλα':'noun','υπέροχος / υπέροχη':'adjective',
+  'ο συμμαθητής / η συμμαθήτρια':'noun','χαλαρώνω':'verb','χαλαρά':'adverb',
+  'ευγενικός / ευγενική':'adjective','θετικός / θετική':'adjective',
+  'περνάω όμορφα':'phrase','απλός / απλή':'adjective','ο επαγγελματίας':'noun',
+  'ο χορευτής / η χορεύτρια':'noun','ο χοντρός / η χοντρή':'adjective',
+  'αδύνατος / αδύνατη':'adjective','ίσως':'adverb','νομίζω':'verb',
+  'ευχάριστος / ευχάριστη':'adjective','ευγνώμων':'adjective'};
+
+const GROUPS=[
+  {key:'progress',label:'Progress'},{key:'type',label:'Word type'},
+  {key:'tense',label:'Tense'},{key:'person',label:'Person'},{key:'number',label:'Number'},
+  {key:'gender',label:'Gender'},{key:'form',label:'Verb pattern'}];
+const GROUP_OF={};
+['unlearned','learning','mastered'].forEach(t=>GROUP_OF[t]='progress');
+['noun','verb','adjective','adverb','preposition','phrase'].forEach(t=>GROUP_OF[t]='type');
+['present','past','future'].forEach(t=>GROUP_OF[t]='tense');
+PERSON_TAGS.forEach(t=>GROUP_OF[t]='person');
+['singular','plural'].forEach(t=>GROUP_OF[t]='number');
+['masculine','feminine','neuter'].forEach(t=>GROUP_OF[t]='gender');
+['regular','irregular','contract','-ομαι','-άμαι','-ούμαι','-ιέμαι'].forEach(t=>GROUP_OF[t]='form');
+
+function tagVocab(key,card){
+  const t=[]; const type = key==='z5' ? (Z5_TYPE[card.gr]||'phrase') : SECTION_TYPE[key];
+  if(type) t.push(type);
+  const n=(card.note||'').toLowerCase();
+  if(type==='noun'){
+    if(n.includes('masc'))t.push('masculine');
+    if(n.includes('fem')) t.push('feminine');
+    if(n.includes('neut'))t.push('neuter');
+  }
+  return t;
+}
+function buildVerbCards(){
+  const out=[];
+  VERBS.forEach(v=>{
+    const form=IRREGULAR.has(v.gr)?'irregular':CONTRACT.has(v.gr)?'contract':'regular';
+    const add=(gr,en,note,tense,i)=>out.push({gr,en,note,
+      tags:['verb',tense,PERSON_TAGS[i],i<3?'singular':'plural',form]});
+    PERSONS.forEach((p,i)=>add(v.present[i],
+      `${p.en} ${v.enPresentForms?v.enPresentForms[i]:(i===2?v.en3rd:v.enBase)}`,
+      `${p.gr} · present tense · past: ${v.past[i]} · future: ${v.future[i]}`,'present',i));
+    PERSONS.forEach((p,i)=>add(v.past[i],
+      `${p.en} ${v.enPastForms?v.enPastForms[i]:v.enPast}`,
+      `${p.gr} · present: ${v.gr} (to ${v.enBase}) · future: ${v.future[i]}`,'past',i));
+    PERSONS.forEach((p,i)=>add(v.future[i],`${p.en} will ${v.enBase}`,
+      `${p.gr} · present: ${v.gr} (to ${v.enBase}) · past: ${v.past[i]}`,'future',i));
+  });
+  return out;
+}
+/* Mediopassive (-ομαι) verbs, present tense only: 6 persons per verb.
+   enForms overrides when English needs "am/are/is" rather than a plain verb. */
+function buildPresentCards(){
+  const out=[];
+  (DATA.PRESENT_VERBS||[]).forEach(v=>{
+    PERSONS.forEach((p,i)=>{
+      const en = v.enForms ? v.enForms[i] : (i===2 ? v.en3rd : v.enBase);
+      out.push({gr:v.f[i], en:`${p.en} ${en}`,
+        note:`${p.gr} · present tense · ${v.pat} pattern · 1st sg: ${v.f[0]}`,
+        tags:['verb','present',PERSON_TAGS[i],i<3?'singular':'plural',v.pat]});
+    });
+  });
+  return out;
+}
+if(DB.past_future) DB.past_future.words=buildVerbCards();
+DB.mediopassive={label:'Mediopassive -ομαι Verbs (B2)', words:buildPresentCards()};
+/* Verb sections tag themselves in their builders; everything else is tagged here. */
+const SELF_TAGGED=new Set(['past_future','mediopassive']);
+Object.keys(DB).forEach(k=>{ if(!SELF_TAGGED.has(k)) DB[k].words.forEach(w=>{w.tags=tagVocab(k,w);}); });
+
+/* ===================== ANSWER MATCHING ===================== */
+const ARTICLES=['ο','η','το','οι','τα','του','της','των','στο','στη','στην','στον'];
+
+/* Fold accents, final sigma and case so "μηλο" can be compared with "το μήλο". */
+function fold(s){
+  return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/ς/g,'σ').toLowerCase().replace(/\s+/g,' ').trim();
+}
+const norm=s=>(s||'').replace(/\s+/g,' ').trim();
+function dropArticle(s){
+  const p=norm(s).split(' ');
+  return (p.length>1 && ARTICLES.includes(fold(p[0]))) ? p.slice(1).join(' ') : norm(s);
+}
+/* One card can hold several acceptable spellings: slash alternatives
+   ("ο δάσκαλος / η δασκάλα") and parenthetical plurals ("το πουλί (pl. τα πουλιά)"). */
+function variants(card){
+  const out=new Set(); const raw=card.gr;
+  const noParen=norm(raw.replace(/\([^)]*\)/g,''));
+  const inParen=[...raw.matchAll(/\((?:pl\.\s*)?([^)]*)\)/g)].map(m=>norm(m[1]));
+  // the whole string as written is always acceptable, slashes and all
+  if(norm(raw)) out.add(norm(raw));
+  if(noParen) out.add(noParen);
+  [raw,noParen,...inParen].forEach(chunk=>{
+    if(!chunk) return;
+    chunk.split(/\s*\/\s*/).forEach(v=>{ v=norm(v); if(v && !/^-/.test(v)) out.add(v); });
+  });
+  return [...out];
+}
+/* Returns: exact | accent | article | accent+article | wrong */
+function grade(input,card){
+  const inp=norm(input);
+  if(!inp) return {verdict:'wrong',issues:[]};
+  const isNoun=(card.tags||[]).includes('noun');
+  for(const v of variants(card)){
+    if(inp.toLowerCase()===v.toLowerCase()) return {verdict:'exact',issues:[]};
+  }
+  const issues=[];
+  for(const v of variants(card)){
+    const accentOnly = fold(inp)===fold(v);
+    if(accentOnly) return {verdict:'partial',issues:['accents']};
+  }
+  if(isNoun){
+    for(const v of variants(card)){
+      const vNo=dropArticle(v), iNo=dropArticle(inp);
+      if(iNo.toLowerCase()===vNo.toLowerCase() && fold(inp)!==fold(v))
+        return {verdict:'partial',issues:['article']};
+      if(fold(iNo)===fold(vNo)){
+        const miss=['article']; if(fold(inp)!==fold(v)) miss.push('accents');
+        return {verdict:'partial',issues:miss};
+      }
+    }
+  }
+  return {verdict:'wrong',issues:[]};
+}
+
+/* ===================== SAVED PROGRESS ===================== */
+const KEY='greek-flashcards.v2', OLDKEY='greek-flashcards.v1';
+const MASTER_AT=5, DRILL_REPS=3;
+let store={};
+try{
+  store=JSON.parse(localStorage.getItem(KEY)||'null')||{};
+  if(!Object.keys(store).length){                    // migrate v1 "known" flags
+    const old=JSON.parse(localStorage.getItem(OLDKEY)||'null');
+    if(old) Object.keys(old).forEach(k=>{ store[k]={s:2,n:0,p:0}; });
+  }
+}catch(e){ store={}; }
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(store)); }catch(e){} }
+const idOf=(sec,c)=>sec+'|'+c.gr+'|'+c.en;
+function rec(sec,c){
+  const id=idOf(sec,c);
+  if(!store[id]) store[id]={s:0,n:0,p:0};
+  return store[id];
+}
+const STATE_TAG=['unlearned','learning','mastered'];
+
+/* ===================== STATE ===================== */
+const keys=Object.keys(DB);
+let sec=keys[0], deck=[], i=0, active=new Set(), facetsOpen=false;
+/* Study modes:
+   'type'   — read English, type the Greek
+   'choice' — pick the answer from CHOICE_CONFIG.options candidates
+   'flip'   — plain tap-to-reveal flashcards, self-rated
+   Direction is remembered separately for each mode that has one. */
+const MODES=['lesson','type','choice','flip'];
+const DRILL_MODES=['type','choice','flip'];
+let mode='type', lastDrill='type';     // lastDrill: where "Start drilling" goes from a lesson
+const dirs={choice:'en-gr', flip:'gr-en'};
+try{
+  const pref=JSON.parse(localStorage.getItem('greek-flashcards.prefs')||'{}');
+  if(MODES.includes(pref.mode)) mode=pref.mode;
+  if(DRILL_MODES.includes(pref.lastDrill)) lastDrill=pref.lastDrill;
+  if(typeof pref.dir==='string') dirs.flip=pref.dir;          // older single-direction pref
+  if(pref.dirs) Object.assign(dirs,pref.dirs);
+}catch(e){}
+if(DRILL_MODES.includes(mode)) lastDrill=mode;
+const curDir=()=>dirs[mode]||'en-gr';
+function savePrefs(){
+  try{ localStorage.setItem('greek-flashcards.prefs',JSON.stringify({mode,lastDrill,dirs})); }catch(e){}
+}
+
+/* ===================== MULTIPLE CHOICE ===================== */
+/* How wrong answers are chosen. Everything about distractor selection lives here.
+   options      — total buttons shown, including the right one.
+   match        — per section, the attribute groups (see GROUPS) a wrong answer
+                  must share with the right one. Groups are relaxed from the END
+                  of the list when there aren't enough candidates, so put the
+                  most important group first.
+   pools        — where candidates come from, tried in order: 'filtered' is the
+                  current section narrowed by your filters, 'section' is all of it. */
+const CHOICE_CONFIG={
+  options:4,
+  match:{
+    default:      ['type','gender'],            // nouns: same part of speech, same article
+    past_future:  ['person','tense','form'],    // "I ate" → other εγώ past forms
+    mediopassive: ['person','form'],            // "I remember" → other εγώ -άμαι, then any εγώ
+  },
+  pools:['filtered','section'],
+};
+
+const tagsInGroup=(c,g)=>(c.tags||[]).filter(t=>(GROUP_OF[t]||'type')===g).sort().join('|');
+const sameOn=(a,b,groups)=>groups.every(g=>tagsInGroup(a,g)===tagsInGroup(b,g));
+function shuffled(arr){
+  const a=arr.slice();
+  for(let n=a.length-1;n>0;n--){const m=Math.floor(Math.random()*(n+1));[a[n],a[m]]=[a[m],a[n]];}
+  return a;
+}
+/* The side of the card shown on the option buttons. */
+const optionText=c=>curDir()==='en-gr'?c.gr:c.en;
+
+/* ===================== LESSONS ===================== */
+/* One markdown template per section. Write ordinary markdown; a line that is
+   only a {{block ...}} placeholder is replaced with markdown generated from the
+   section's own cards, so lists and tables stay in step with the data.
+
+   Blocks (arguments are key=value, comma-separated values):
+     {{words}}                          every card as "**Greek** — English"
+     {{words group=gender}}             …split under a heading per attribute
+     {{words group=form only=εγώ}}      …only cards carrying all listed attributes
+     {{conjugate verbs=a,b tense=present}}   persons × verbs/tenses table
+     {{principal-parts}}                each B1 verb's εγώ form in all three tenses
+   Also {{label}} anywhere for the section name.
+   A section without its own entry gets LESSONS.nouns if every card is a noun,
+   otherwise LESSONS.generic. */
+const LESSONS={
+
+mediopassive:`
+# Mediopassive -ομαι verbs
+
+Verbs ending in **-μαι** use the *mediopassive* voice. Despite the name, few of these are passive in meaning. Some are reflexive — ντύνομαι, *I dress myself* — and many are **deponents**, verbs that only exist in this form: κοιμάμαι, θυμάμαι, σκέφτομαι, εργάζομαι.
+
+## The endings
+
+There are four patterns. The ending of the εγώ form tells you which one a verb follows.
+
+| | -ομαι | -άμαι | -ούμαι | -ιέμαι |
+|---|---|---|---|---|
+| εγώ | -ομαι | -άμαι | -ούμαι | -ιέμαι |
+| εσύ | -εσαι | -άσαι | -είσαι | -ιέσαι |
+| αυτός | -εται | -άται | -είται | -ιέται |
+| εμείς | -όμαστε | -όμαστε | -ούμαστε | -ιόμαστε |
+| εσείς | -εστε | -άστε | -είστε | -ιέστε |
+| αυτοί | -ονται | -ούνται | -ούνται | -ιούνται |
+
+> **Stress shift.** Plain -ομαι verbs keep the stress on the stem, except in εμείς where it moves to the ending: σηκώνομαι → **σηκωνόμαστε**.
+
+> **The -εί- forms.** -ούμαι verbs switch to -εί- for εσύ, αυτός and εσείς: ασχολούμαι → ασχολ**εί**σαι, ασχολ**εί**ται, ασχολ**εί**στε.
+
+## One verb from each pattern
+
+{{conjugate verbs=σηκώνομαι,κοιμάμαι}}
+
+{{conjugate verbs=ασχολούμαι,στενοχωριέμαι}}
+
+## All the verbs
+
+{{words group=form only=εγώ}}
+`,
+
+past_future:`
+# Present, past & future
+
+Every verb here is drilled in three tenses:
+
+- **Present** — happening now, or habitually: τρώω, *I eat*
+- **Past** (aorist) — a single completed action: έφαγα, *I ate*
+- **Future** — **θα** plus the *past* stem, not the present one: θα φάω, *I will eat*
+
+## Regular endings
+
+{{conjugate verbs=γράφω tense=present,past,future}}
+
+The irregular verbs change their stem, but mostly keep these endings.
+
+> **The augment.** The past is stressed on the third syllable from the end. When a form is too short for that, it adds **έ-** in front: **έ**γραψα, **έ**φυγα — but γράψαμε, φύγαμε, which are already long enough.
+
+> **Fixed stems.** Some irregular pasts begin with a vowel that never drops: **ή**πια, **ή**πιαμε · **ή**ρθα, **ή**ρθαμε · **εί**δα, **εί**δαμε.
+
+> **είμαι** has no aorist. Its past is ήμουν (*I was*, *I used to be*) and its future is simply θα είμαι.
+
+## Contract verbs
+
+μιλάω and ρωτάω take **-άω, -άς, -άει, -άμε, -άτε, -άνε** in the present, and **-ησα** in the past: μίλησα, ρώτησα.
+
+## Every verb at a glance
+
+{{principal-parts}}
+`,
+
+prepositions:`
+# Prepositions & location
+
+Most of these are a place word followed by **από** or **σε**. Both take the accusative.
+
+- **από** stays as it is: πίσω από το σπίτι, *behind the house*
+- **σε** merges with the article: σε + το → **στο**, σε + τη(ν) → **στη(ν)**, σε + τον → **στον** — δίπλα στο τραπέζι, *next to the table*
+
+## The words
+
+{{words}}
+`,
+
+z5:`
+# Z5 vocabulary
+
+A mixed list from class, grouped by word type.
+
+{{words group=type}}
+`,
+
+nouns:`
+# {{label}}
+
+Every Greek noun has a gender, and the article shows it. Learn each word together with its article.
+
+| | Singular | Plural |
+|---|---|---|
+| Masculine | ο | οι |
+| Feminine | η | οι |
+| Neuter | το | τα |
+
+> Most nouns in **-ος, -ας, -ης** are masculine, most in **-α, -η** feminine, and most in **-ο, -ι, -μα** neuter. There are exceptions, so trust the article over the ending.
+
+{{words group=gender}}
+`,
+
+generic:`
+# {{label}}
+
+{{words group=type}}
+`,
+};
+
+/* Display order and headings for grouped word lists. */
+const LESSON_ORDER=['masculine','feminine','neuter','-ομαι','-άμαι','-ούμαι','-ιέμαι',
+  'irregular','regular','contract','noun','verb','adjective','adverb','preposition','phrase'];
+const LESSON_HEAD={masculine:'Masculine — ο',feminine:'Feminine — η',neuter:'Neuter — το',
+  irregular:'Irregular',regular:'Regular',contract:'Contract (-άω)',
+  noun:'Nouns',verb:'Verbs',adjective:'Adjectives',adverb:'Adverbs',preposition:'Prepositions',phrase:'Phrases'};
+
+/* Look up a verb's forms by its εγώ present form, in either verb list. */
+function findVerb(head){
+  const p=(DATA.PRESENT_VERBS||[]).find(v=>v.gr===head);
+  if(p) return {gr:p.gr, present:p.f};
+  const v=(VERBS||[]).find(v=>v.gr===head);
+  return v ? {gr:v.gr, present:v.present, past:v.past, future:v.future} : null;
+}
+const stateDot=c=>{const s=rec(sec,c).s; return s?` ⟦${s}⟧`:'';};
+
+const LESSON_BLOCKS={
+  label(){ return DB[sec].label; },
+
+  words(a){
+    let cards=DB[sec].words;
+    if(a.only){ const need=a.only.split(','); cards=cards.filter(c=>need.every(t=>(c.tags||[]).includes(t))); }
+    const line=c=>`- **${c.gr}** — ${c.en}${stateDot(c)}`;
+    if(!a.group) return cards.map(line).join('\n');
+    const buckets=new Map();
+    cards.forEach(c=>{
+      const ts=(c.tags||[]).filter(t=>(GROUP_OF[t]||'type')===a.group);
+      (ts.length?ts:['other']).forEach(t=>{ if(!buckets.has(t)) buckets.set(t,[]); buckets.get(t).push(c); });
+    });
+    const rank=t=>{const n=LESSON_ORDER.indexOf(t);return n<0?999:n;};
+    return [...buckets.keys()].sort((x,y)=>rank(x)-rank(y))
+      .map(t=>`### ${LESSON_HEAD[t]||t} · ${buckets.get(t).length}\n\n${buckets.get(t).map(line).join('\n')}`)
+      .join('\n\n');
+  },
+
+  conjugate(a){
+    const verbs=(a.verbs||'').split(',').map(findVerb).filter(Boolean);
+    const tenses=(a.tense||'present').split(',').filter(t=>verbs.every(v=>v[t]));
+    if(!verbs.length||!tenses.length) return '';
+    const cols=[]; verbs.forEach(v=>tenses.forEach(t=>cols.push({v,t})));
+    const head=c=> verbs.length>1&&tenses.length>1 ? `${c.v.gr} (${c.t})` : verbs.length>1 ? c.v.gr : c.t;
+    return [`| | ${cols.map(head).join(' | ')} |`, `|${'---|'.repeat(cols.length+1)}`,
+      ...PERSON_TAGS.map((p,n)=>`| ${p} | ${cols.map(c=>c.v[c.t][n]).join(' | ')} |`)].join('\n');
+  },
+
+  'principal-parts'(){
+    const groups=[['Irregular',v=>IRREGULAR.has(v.gr)],['Regular',v=>!IRREGULAR.has(v.gr)&&!CONTRACT.has(v.gr)],
+      ['Contract (-άω)',v=>CONTRACT.has(v.gr)]];
+    return groups.map(([name,test])=>{
+      const vs=VERBS.filter(test); if(!vs.length) return '';
+      return `### ${name} · ${vs.length}\n\n| | Present | Past | Future |\n|---|---|---|---|\n`+
+        vs.map(v=>`| to ${v.enBase} | ${v.present[0]} | ${v.past[0]} | ${v.future[0]} |`).join('\n');
+    }).filter(Boolean).join('\n\n');
+  },
+};
+
+function lessonMarkdown(){
+  const words=DB[sec].words;
+  const tpl=LESSONS[sec] || (words.every(c=>(c.tags||[]).includes('noun')) ? LESSONS.nouns : LESSONS.generic);
+  return tpl.replace(/\{\{\s*([\w-]+)([^}]*)\}\}/g,(m,name,rest)=>{
+    const fn=LESSON_BLOCKS[name]; if(!fn) return m;
+    const args={}; rest.trim().split(/\s+/).filter(Boolean).forEach(kv=>{const [k,...v]=kv.split('=');args[k]=v.join('=');});
+    return fn(args);
+  });
+}
+
+/* Minimal markdown: # headings, paragraphs, - and 1. lists, > quotes, --- rules,
+   | tables |, **bold**, *italic*, `code`. Text is escaped before any markup is added. */
+function renderMarkdown(src){
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const inline=s=>esc(s)
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g,'<em>$1</em>')
+    .replace(/⟦([12])⟧/g,'<span class="st st$1"></span>');
+  const cells=l=>l.trim().replace(/^\||\|$/g,'').split('|').map(x=>x.trim());
+  const lines=src.split('\n'), out=[];
+  let n=0;
+  while(n<lines.length){
+    const l=lines[n];
+    if(!l.trim()){ n++; continue; }
+    let m;
+    if((m=l.match(/^(#{1,4})\s+(.*)$/))){ out.push(`<h${m[1].length}>${inline(m[2])}</h${m[1].length}>`); n++; continue; }
+    if(/^\s*---+\s*$/.test(l)){ out.push('<hr>'); n++; continue; }
+    if(/^\s*\|/.test(l) && /^\s*\|[\s|:-]+\|?\s*$/.test(lines[n+1]||'')){
+      const head=cells(l); n+=2; const rows=[];
+      while(n<lines.length && /^\s*\|/.test(lines[n])) rows.push(cells(lines[n++]));
+      out.push('<div class="tbl"><table><thead><tr>'+head.map(h=>`<th>${inline(h)}</th>`).join('')+
+        '</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>`<td>${inline(c)}</td>`).join('')+'</tr>').join('')+
+        '</tbody></table></div>');
+      continue;
+    }
+    if(/^\s*>/.test(l)){
+      const q=[]; while(n<lines.length && /^\s*>/.test(lines[n])) q.push(lines[n++].replace(/^\s*>\s?/,''));
+      out.push(`<blockquote>${inline(q.join(' '))}</blockquote>`); continue;
+    }
+    if(/^\s*[-*]\s+/.test(l) || /^\s*\d+\.\s+/.test(l)){
+      const ordered=/^\s*\d+\./.test(l), items=[];
+      while(n<lines.length && (ordered?/^\s*\d+\.\s+/:/^\s*[-*]\s+/).test(lines[n]))
+        items.push(lines[n++].replace(/^\s*([-*]|\d+\.)\s+/,''));
+      const tag=ordered?'ol':'ul';
+      out.push(`<${tag}>${items.map(x=>`<li>${inline(x)}</li>`).join('')}</${tag}>`); continue;
+    }
+    const para=[];
+    while(n<lines.length && lines[n].trim() && !/^(#{1,4}\s|\s*[-*]\s|\s*\d+\.\s|\s*>|\s*\||\s*---+\s*$)/.test(lines[n])) para.push(lines[n++]);
+    out.push(`<p>${inline(para.join(' '))}</p>`);
+  }
+  return out.join('\n');
+}
+
+/* Returns the right card plus up to options-1 distractors, in random order.
+   Tries the strictest match on each pool before relaxing a group, so a close
+   match from the whole section beats a loose one from the filter. */
+function buildChoices(c){
+  const want=CHOICE_CONFIG.options-1;
+  const groups=CHOICE_CONFIG.match[sec]||CHOICE_CONFIG.match.default;
+  const poolOf={filtered:()=>DB[sec].words.filter(matches), section:()=>DB[sec].words};
+  const picked=[], taken=new Set([optionText(c)]);
+  for(let g=groups.length; g>=0 && picked.length<want; g--){
+    const use=groups.slice(0,g);
+    for(const p of CHOICE_CONFIG.pools){
+      for(const x of shuffled(poolOf[p]())){
+        if(picked.length>=want) break;
+        const t=optionText(x);
+        if(x===c || taken.has(t) || !sameOn(x,c,use)) continue;   // never show two identical buttons
+        picked.push(x); taken.add(t);
+      }
+      if(picked.length>=want) break;
+    }
+  }
+  return shuffled([c,...picked]);
+}
+let finished=false, missedCards=[], seenRight=0, seenWrong=0;
+/* per-card turn state */
+let phase='ask';        // ask | drill | resolved
+let drillDone=0, drillVisible=true, cameFromReveal=false, countedThisCard=false;
+let choiceOpts=null, choicePicked=-1;   // built once per card so options don't reshuffle on redraw
+
+/* A missed card gets slotted back in a few cards ahead so it comes round again
+   while it's still fresh. It keeps returning until it's answered unaided. */
+const REQUEUE_MIN=3, REQUEUE_MAX=8;
+function markMissed(c){ if(!missedCards.includes(c)) missedCards.push(c); }
+function requeue(c){
+  const gap=REQUEUE_MIN+Math.floor(Math.random()*(REQUEUE_MAX-REQUEUE_MIN+1));
+  const at=Math.min(i+gap,deck.length);
+  deck.splice(at,0,c);
+  return at-i;
+}
+
+const $=id=>document.getElementById(id);
+const tagsOf=c=>(c.tags||[]).concat([STATE_TAG[rec(sec,c).s]]);
+
+function progressSel(){ return [...active].filter(t=>GROUP_OF[t]==='progress'); }
+/* Cards left after the progress filter — the attribute lists are built from this. */
+function pool(){
+  const p=progressSel();
+  return DB[sec].words.filter(c=>!p.length || p.includes(STATE_TAG[rec(sec,c).s]));
+}
+function matches(c){
+  if(!active.size) return true;
+  const byGroup={};
+  active.forEach(t=>{const g=GROUP_OF[t]||'type';(byGroup[g]=byGroup[g]||[]).push(t);});
+  const tags=tagsOf(c);
+  return Object.values(byGroup).every(list=>list.some(t=>tags.includes(t)));
+}
+function pruneActive(){
+  const avail=new Set();
+  DB[sec].words.forEach(c=>(c.tags||[]).forEach(t=>avail.add(t)));
+  STATE_TAG.forEach(t=>avail.add(t));
+  [...active].forEach(t=>{ if(!avail.has(t)) active.delete(t); });
+}
+function sectionStats(k){
+  const w=DB[k].words;
+  let m=0,l=0; w.forEach(c=>{const s=rec(k,c).s; if(s===2)m++; else if(s===1)l++;});
+  return {m,l,total:w.length};
+}
+function loadDeck(shuffle){
+  pruneActive();
+  deck=DB[sec].words.filter(matches).slice();
+  if(shuffle) for(let n=deck.length-1;n>0;n--){const m=Math.floor(Math.random()*(n+1));[deck[n],deck[m]]=[deck[m],deck[n]];}
+  i=0;finished=false;missedCards=[];seenRight=0;seenWrong=0;
+  resetTurn();render();
+}
+function resetTurn(){
+  phase='ask';drillDone=0;drillVisible=true;cameFromReveal=false;countedThisCard=false;
+  choiceOpts=null;choicePicked=-1;
+  $('typed').value='';$('typed').classList.remove('bad');
+}
+
+/* ===================== RENDER ===================== */
+function buildSelect(){
+  $('section').innerHTML=keys.map(k=>{
+    const s=sectionStats(k);
+    return `<option value="${k}"${k===sec?' selected':''}>${DB[k].label} · ${s.m}/${s.total}</option>`;
+  }).join('');
+}
+function drawFacets(){
+  const p=pool(), all=DB[sec].words;
+  const counts={}, pcounts={};
+  p.forEach(c=>(c.tags||[]).forEach(t=>counts[t]=(counts[t]||0)+1));
+  all.forEach(c=>{const t=STATE_TAG[rec(sec,c).s];pcounts[t]=(pcounts[t]||0)+1;});
+  const html=GROUPS.map(g=>{
+    let tags;
+    if(g.key==='progress') tags=STATE_TAG.filter(t=>pcounts[t]);
+    else{
+      tags=Object.keys(counts).filter(t=>(GROUP_OF[t]||'type')===g.key);
+      if(g.key==='person')      tags.sort((a,b)=>PERSON_TAGS.indexOf(a)-PERSON_TAGS.indexOf(b));
+      else if(g.key==='tense')  tags.sort((a,b)=>['present','past','future'].indexOf(a)-['present','past','future'].indexOf(b));
+      else tags.sort((a,b)=>counts[b]-counts[a]);
+    }
+    if(!tags.length) return '';
+    return `<div class="grp"><h3>${g.label}</h3><div class="tags">`+
+      tags.map(t=>`<button class="tag-btn${active.has(t)?' on':''}" data-tag="${t}">${t}<span class="c">${g.key==='progress'?pcounts[t]:counts[t]}</span></button>`).join('')+
+      `</div></div>`;
+  }).join('');
+  $('facetgroups').innerHTML=html||'<p class="empty-note">No attributes to filter on here.</p>';
+  $('facetgroups').querySelectorAll('.tag-btn').forEach(b=>{
+    b.onclick=()=>{const t=b.dataset.tag;active.has(t)?active.delete(t):active.add(t);loadDeck(false);};
+  });
+  const n=active.size;
+  $('facets').innerHTML='Filters'+(n?`<span class="badge">${n}</span>`:'');
+  $('facets').classList.toggle('on',n>0);
+  $('facetsummary').textContent=n?`${deck.length} of ${DB[sec].words.length} cards match.`:'Pick attributes to narrow the deck.';
+  $('facetbox').hidden=!facetsOpen;
+  const hm=progressSel().length===2&&!active.has('mastered');
+  $('hidemastered').classList.toggle('on',hm);
+}
+function drawStrip(){
+  $('strip').innerHTML=deck.map((c,n)=>{
+    let cls='s'+rec(sec,c).s;
+    if(!finished&&n===i) cls='cur';
+    return `<i class="${cls}"></i>`;
+  }).join('');
+}
+function render(){
+  let M=0,L=0,T=0;
+  keys.forEach(k=>{const s=sectionStats(k);M+=s.m;L+=s.l;T+=s.total;});
+  $('mastered').textContent=M;$('learningct').textContent=L;$('grandtotal').textContent=T;
+  const s=sectionStats(sec);
+  $('sectionstat').textContent=`${s.m} mastered · ${s.l} learning`;
+  buildSelect();drawFacets();
+
+  const inLesson = mode==='lesson';
+  $('lesson').hidden=!inLesson;
+  $('strip').hidden=inLesson; $('metarow').hidden=inLesson;
+  if(inLesson){
+    $('study').hidden=true; $('done').hidden=true; $('facetbox').hidden=true;
+    $('lessonbody').innerHTML=renderMarkdown(lessonMarkdown());
+    return;
+  }
+
+  if(!deck.length){
+    $('study').hidden=true;$('done').hidden=false;$('drillmissed').hidden=true;
+    $('donetitle').textContent=active.size?'No cards match':'Nothing here';
+    $('donetext').textContent=active.size
+      ?'No card in this section has every attribute you picked. Try removing one.'
+      :'This section is empty.';
+    $('pos').textContent='0 cards';$('strip').innerHTML='';
+    return;
+  }
+  if(finished){
+    $('study').hidden=true;$('done').hidden=false;
+    $('donetitle').textContent='Deck finished';
+    $('donetext').innerHTML=`<span class="n">${seenRight}</span> right first try · <span class="n">${seenWrong}</span> missed`;
+    $('drillmissed').hidden=missedCards.length===0;
+    $('pos').textContent=`${deck.length} of ${deck.length}`;drawStrip();
+    return;
+  }
+  $('study').hidden=false;$('done').hidden=true;
+
+  const c=deck[i], r=rec(sec,c);
+  $('prompt').textContent=c.en;
+  $('pos').textContent=`${i+1} of ${deck.length}`;
+  $('prev').disabled=i===0;
+  drawStrip();
+
+  // rating buttons
+  [...$('rate').children].forEach(b=>{
+    const on=+b.dataset.s===r.s;
+    b.className=on?('on'+r.s):'';
+  });
+  $('reps').textContent = r.n>=MASTER_AT
+    ? `Correct ${r.n}× — mastery threshold reached`
+    : `Correct ${r.n}× · ${MASTER_AT-r.n} more to auto-master`;
+
+  $('choices').hidden = mode!=='choice';
+  if(mode==='choice'){
+    const enGr = curDir()==='en-gr';
+    const open = phase==='resolved';
+    if(!choiceOpts) choiceOpts=buildChoices(c);
+    $('prompt').textContent = enGr ? c.en : c.gr;
+    $('answer').hidden=true;
+    $('cardnote').hidden=!(open&&c.note);
+    if(c.note) $('cardnote').textContent=c.note;
+    $('entry').hidden=true; $('drillcount').hidden=true; $('flipacts').hidden=true;
+    $('cardbox').classList.remove('tappable');
+    $('cue').textContent = enGr ? 'pick the greek' : 'pick the english';
+    $('choices').innerHTML = choiceOpts.map((o,n)=>{
+      let cls='opt'+(enGr?'':' en');
+      if(open){
+        if(o===c) cls+=' right';
+        else if(n===choicePicked) cls+=' wrong';
+        else cls+=' dim';
+      }
+      return `<button class="${cls}" data-n="${n}"${open?' disabled':''}><span class="k">${n+1}</span><span></span></button>`;
+    }).join('');
+    // set text separately so Greek/English content is never parsed as markup
+    $('choices').querySelectorAll('.opt').forEach((b,n)=>{
+      b.lastElementChild.textContent=optionText(choiceOpts[n]);
+      b.onclick=()=>pickChoice(n);
+    });
+    $('skip').hidden=open; $('next').hidden=!open;
+    return;
+  }
+
+  if(mode==='flip'){
+    // plain flashcards: one side, tap to turn it over, rate it yourself
+    const showGreek = curDir()==='gr-en';
+    const front = showGreek ? c.gr : c.en;
+    const back  = showGreek ? c.en : c.gr;
+    const open  = phase==='resolved';
+    $('prompt').textContent=front;
+    $('answer').hidden=!open;
+    $('answer').classList.remove('hidden-drill');
+    if(open) $('answer').textContent=back;
+    $('cardnote').hidden=!(open&&c.note);
+    if(c.note) $('cardnote').textContent=c.note;
+    $('entry').hidden=true;
+    $('drillcount').hidden=true;
+    $('cardbox').classList.add('tappable');
+    $('cue').textContent = open ? 'tap to hide' : 'tap to reveal';
+    $('flipacts').hidden = !open;
+    $('skip').hidden = open;
+    $('next').hidden = !open;
+    return;
+  }
+  $('cardbox').classList.remove('tappable');
+  $('flipacts').hidden=true;
+
+  const showAnswer = phase==='drill' ? drillVisible : phase==='resolved';
+  $('answer').hidden=!showAnswer;
+  $('answer').classList.remove('hidden-drill');
+  if(showAnswer) $('answer').textContent=c.gr;
+  else if(phase==='drill'){
+    $('answer').hidden=false;
+    $('answer').classList.add('hidden-drill');
+    $('answer').textContent='•'.repeat(Math.min(c.gr.replace(/\s/g,'').length,14));
+  }
+  $('cardnote').hidden=!(phase==='resolved'&&c.note);
+  if(c.note) $('cardnote').textContent=c.note;
+
+  $('entry').hidden = phase==='resolved';
+  $('skip').hidden  = phase==='resolved';
+  $('next').hidden  = phase!=='resolved';
+  $('cue').textContent = phase==='drill' ? `write it out ${DRILL_REPS}×` : 'type the greek';
+
+  $('drillcount').hidden = phase!=='drill';
+  if(phase==='drill'){
+    $('drillcount').innerHTML='rep '+(drillDone+1)+' of '+DRILL_REPS+
+      '<span class="pips">'+[0,1,2].map(n=>`<i class="${n<drillDone?'done':''}"></i>`).join('')+'</span>';
+  }
+  if(phase!=='resolved') setTimeout(()=>$('typed').focus(),30);
+}
+function verdict(cls,html){
+  const v=$('verdict');v.hidden=false;v.className='verdict '+cls;v.innerHTML=html;
+}
+
+/* ===================== GRADING FLOW ===================== */
+function bump(c,partial){
+  const r=rec(sec,c);
+  r.n++; if(partial) r.p++;
+  if(r.n>=MASTER_AT) r.s=2; else if(r.s===0) r.s=1;
+  save();
+}
+function demote(c){ const r=rec(sec,c); r.s=0; save(); }
+
+function submit(){
+  const c=deck[i], typed=$('typed').value;
+  if(!norm(typed)) return;
+  const g=grade(typed,c);
+
+  if(phase==='drill'){
+    if(g.verdict==='wrong'){
+      $('typed').classList.add('bad');
+      drillVisible=true;                       // show it again after a miss
+      verdict('no',`Not yet — it's <b>${c.gr}</b>. Look closely, then try this rep again.`);
+      $('typed').value='';render();return;
+    }
+    drillDone++;
+    $('typed').value='';$('typed').classList.remove('bad');
+    if(drillDone>=DRILL_REPS){
+      demote(c);                                // revealed/missed → back to unlearned
+      phase='resolved';
+      const gap=requeue(c);                     // comes back in a few cards
+      verdict('ok',`Three reps done. <b>${c.gr}</b> comes back in ${gap} cards — get it unaided to clear it.`);
+    }else{
+      drillVisible=false;                       // hidden for reps 2 and 3
+      const note=g.verdict==='partial'?` (${g.issues.join(' & ')} off, but close enough)`:'';
+      verdict('part',`Rep ${drillDone} done${note}. Now from memory.`);
+    }
+    render();return;
+  }
+
+  // first attempt on this card
+  if(g.verdict==='wrong'){
+    seenWrong++; markMissed(c);
+    phase='drill';drillDone=0;drillVisible=true;
+    $('typed').value='';$('typed').classList.add('bad');
+    verdict('no',`Not quite — it's <b>${c.gr}</b>. Write it out ${DRILL_REPS}× to lock it in.`);
+    render();return;
+  }
+  if(!countedThisCard&&!cameFromReveal){
+    countedThisCard=true;seenRight++;bump(c,g.verdict==='partial');
+  }
+  phase='resolved';
+  if(g.verdict==='exact') verdict('ok',`Correct — <b>${c.gr}</b>`);
+  else verdict('part',`Close: <b>${c.gr}</b> — you missed the ${g.issues.join(' and ')}. Half credit, it still counts.`);
+  render();
+}
+
+function doReveal(){
+  const c=deck[i];
+  cameFromReveal=true;
+  seenWrong++; markMissed(c);
+  phase='drill';drillDone=0;drillVisible=true;
+  $('typed').value='';
+  verdict('part',`It's <b>${c.gr}</b>. Write it out ${DRILL_REPS}× — hidden after the first — to move on.`);
+  render();
+}
+function go(n){
+  if(n>=deck.length){finished=true;render();return;}
+  i=n;$('verdict').hidden=true;resetTurn();render();
+}
+
+/* Multiple choice: right first time counts a rep; a wrong pick demotes the card
+   and requeues it, the same as a missed typed answer. */
+function pickChoice(n){
+  if(mode!=='choice' || phase==='resolved' || !choiceOpts) return;
+  const c=deck[i], o=choiceOpts[n];
+  choicePicked=n; phase='resolved';
+  if(o===c){
+    if(!countedThisCard){countedThisCard=true;seenRight++;bump(c,false);}
+    verdict('ok',`Correct — <b>${c.gr}</b>`);
+  }else{
+    seenWrong++; markMissed(c); demote(c);
+    const gap=requeue(c);
+    verdict('no',`It's <b>${c.gr}</b>, not ${o.gr}. It comes back in ${gap} cards.`);
+  }
+  render();
+}
+
+/* ===================== EVENTS ===================== */
+function applyMode(){
+  $('mode').querySelectorAll('button').forEach(b=>{
+    const on=b.dataset.mode===mode;
+    b.classList.toggle('on',on); b.setAttribute('aria-checked',on);
+  });
+  $('dir').hidden = mode==='type' || mode==='lesson';
+  $('dir').textContent = curDir()==='gr-en' ? 'GR → EN' : 'EN → GR';
+  $('drillrow').hidden = mode==='lesson';     // filters, shuffle etc. only apply to drilling
+}
+function setMode(m){
+  if(m===mode) return;
+  const wasLesson = mode==='lesson';
+  mode=m; if(DRILL_MODES.includes(m)) lastDrill=m;
+  savePrefs();applyMode();$('verdict').hidden=true;resetTurn();render();
+  if(wasLesson||m==='lesson') try{ window.scrollTo(0,0); }catch(e){}
+}
+$('mode').querySelectorAll('button').forEach(b=>{ b.onclick=()=>setMode(b.dataset.mode); });
+$('startdrill').onclick=()=>setMode(lastDrill);
+$('dir').onclick=()=>{
+  dirs[mode] = curDir()==='gr-en' ? 'en-gr' : 'gr-en';
+  savePrefs();applyMode();$('verdict').hidden=true;resetTurn();render();
+};
+/* 1–4 picks an option on a keyboard; Enter moves on once answered. */
+document.addEventListener('keydown',e=>{
+  if(mode!=='choice' || e.target.tagName==='INPUT' || e.target.tagName==='SELECT') return;
+  const n=parseInt(e.key,10);
+  if(n>=1 && choiceOpts && n<=choiceOpts.length){ e.preventDefault(); pickChoice(n-1); }
+  else if(e.key==='Enter' && phase==='resolved'){ e.preventDefault(); go(i+1); }
+});
+$('cardbox').onclick=()=>{
+  if(mode!=='flip') return;
+  phase = phase==='resolved' ? 'ask' : 'resolved';
+  render();
+};
+/* Self-rated in flip mode: no spelling to check, so the answer is your word. */
+$('fyes').onclick=e=>{
+  e.stopPropagation();
+  const c=deck[i];
+  if(!countedThisCard){countedThisCard=true;seenRight++;bump(c,false);}
+  go(i+1);
+};
+$('fno').onclick=e=>{
+  e.stopPropagation();
+  const c=deck[i];
+  seenWrong++;markMissed(c);demote(c);
+  const gap=requeue(c);
+  verdict('part',`Noted — <b>${c.gr}</b> comes back in ${gap} cards.`);
+  const keep=$('verdict').innerHTML;
+  go(i+1);
+  $('verdict').hidden=false;$('verdict').className='verdict part';$('verdict').innerHTML=keep;
+};
+
+$('check').onclick=submit;
+$('typed').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();submit();}});
+$('reveal').onclick=doReveal;
+$('next').onclick=()=>go(i+1);
+$('skip').onclick=()=>go(i+1);
+$('prev').onclick=()=>{if(i>0)go(i-1);};
+$('rate').querySelectorAll('button').forEach(b=>{
+  b.onclick=()=>{const r=rec(sec,deck[i]);r.s=+b.dataset.s;save();render();};
+});
+$('section').onchange=e=>{sec=e.target.value;$('verdict').hidden=true;loadDeck(false);};
+$('facets').onclick=()=>{facetsOpen=!facetsOpen;$('facetbox').hidden=!facetsOpen;};
+$('clearfacets').onclick=()=>{active.clear();loadDeck(false);};
+$('hidemastered').onclick=()=>{
+  const on=progressSel().length===2&&!active.has('mastered');
+  STATE_TAG.forEach(t=>active.delete(t));
+  if(!on){active.add('unlearned');active.add('learning');}
+  loadDeck(false);
+};
+$('shuffle').onclick=()=>{$('verdict').hidden=true;loadDeck(true);};
+$('restart').onclick=()=>{$('verdict').hidden=true;loadDeck(false);};
+$('againdeck').onclick=()=>{$('verdict').hidden=true;loadDeck(true);};
+$('drillmissed').onclick=()=>{
+  deck=missedCards.slice();i=0;finished=false;missedCards=[];seenRight=0;seenWrong=0;
+  $('verdict').hidden=true;resetTurn();render();
+};
+$('reset').onclick=()=>{
+  if(confirm('Clear all saved progress and counts on this device?')){
+    store={};save();$('verdict').hidden=true;loadDeck(false);
+  }
+};
+applyMode();
+loadDeck(false);
+</script>
+</body>
+</html>
