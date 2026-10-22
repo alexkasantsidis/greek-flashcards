@@ -3687,67 +3687,83 @@ const DATA = {
    "words": [
     {
      "gr": "αργώ",
-     "en": "to be late"
+     "en": "to be late",
+     "past": "άργησα"
     },
     {
      "gr": "συμφωνώ",
-     "en": "to agree"
+     "en": "to agree",
+     "past": "συμφώνησα"
     },
     {
      "gr": "διαφωνώ",
-     "en": "to disagree"
+     "en": "to disagree",
+     "past": "διαφώνησα"
     },
     {
      "gr": "τηλεφωνώ",
-     "en": "to phone / to call"
+     "en": "to phone / to call",
+     "past": "τηλεφώνησα"
     },
     {
      "gr": "συγχωρώ",
-     "en": "to forgive"
+     "en": "to forgive",
+     "past": "συγχώρεσα"
     },
     {
      "gr": "ευχαριστώ",
-     "en": "to thank"
+     "en": "to thank",
+     "past": "ευχαρίστησα"
     },
     {
      "gr": "ανησυχώ",
-     "en": "to worry"
+     "en": "to worry",
+     "past": "ανησύχησα"
     },
     {
      "gr": "χρησιμοποιώ",
-     "en": "to use"
+     "en": "to use",
+     "past": "χρησιμοποίησα"
     },
     {
      "gr": "οδηγώ",
-     "en": "to drive"
+     "en": "to drive",
+     "past": "οδήγησα"
     },
     {
      "gr": "προσπαθώ",
-     "en": "to try"
+     "en": "to try",
+     "past": "προσπάθησα"
     },
     {
      "gr": "μπορώ",
-     "en": "to be able / can"
+     "en": "to be able / can",
+     "past": "μπόρεσα"
     },
     {
      "gr": "συμπαθώ",
-     "en": "to like (someone)"
+     "en": "to like (someone)",
+     "past": "συμπάθησα"
     },
     {
      "gr": "αντιπαθώ",
-     "en": "to dislike (someone)"
+     "en": "to dislike (someone)",
+     "past": "αντιπάθησα"
     },
     {
      "gr": "στενοχωρώ",
-     "en": "to upset / to sadden"
+     "en": "to upset / to sadden",
+     "past": "στενοχώρησα"
     },
     {
      "gr": "δημιουργώ",
-     "en": "to create"
+     "en": "to create",
+     "past": "δημιούργησα"
     },
     {
      "gr": "πληροφορώ",
-     "en": "to inform"
+     "en": "to inform",
+     "past": "πληροφόρησα"
     }
    ]
   }
@@ -4341,6 +4357,8 @@ DB.mediopassive={label:'Mediopassive -ομαι Verbs (B2)', words:buildPresentCa
 /* Verb sections tag themselves in their builders; everything else is tagged here. */
 const SELF_TAGGED=new Set(['past_future','mediopassive']);
 Object.keys(DB).forEach(k=>{ if(!SELF_TAGGED.has(k)) DB[k].words.forEach(w=>{w.tags=tagVocab(k,w);}); });
+/* A card's past (aorist) form, when it has one, shows as its note. */
+Object.values(DB).forEach(s=>s.words.forEach(w=>{ if(typeof w.past==='string' && !w.note) w.note='past: '+w.past; }));
 
 /* ===================== ANSWER MATCHING ===================== */
 const ARTICLES=['ο','η','το','οι','τα','του','της','των','στο','στη','στην','στον'];
@@ -4563,6 +4581,46 @@ Most of these are a place word followed by **από** or **σε**. Both take the
 {{words}}
 `,
 
+b2_verbs:`
+# Verbs (B2)
+
+Every verb here ends in a stressed **-ώ**. They all follow one pattern, and in the present the stress always stays on the ending.
+
+## Present tense
+
+| | Ending | μπορώ | συμφωνώ |
+|---|---|---|---|
+| εγώ | -ώ | μπορώ | συμφωνώ |
+| εσύ | -είς | μπορείς | συμφωνείς |
+| αυτός | -εί | μπορεί | συμφωνεί |
+| εμείς | -ούμε | μπορούμε | συμφωνούμε |
+| εσείς | -είτε | μπορείτε | συμφωνείτε |
+| αυτοί | -ούν(ε) | μπορούν(ε) | συμφωνούν(ε) |
+
+> **Not the -άω pattern.** Verbs like μιλάω (μιλάς, μιλάει) are a different group. These -ώ verbs use **-εί-**: αργείς, ανησυχεί, οδηγείτε.
+
+## Past tense
+
+Most of these verbs form the past with **-ησα**. A few, like μπορώ and συγχωρώ, take **-εσα** instead.
+
+| | -ησα | συμφωνώ | -εσα | μπορώ |
+|---|---|---|---|---|
+| εγώ | -ησα | συμφώνησα | -εσα | μπόρεσα |
+| εσύ | -ησες | συμφώνησες | -εσες | μπόρεσες |
+| αυτός | -ησε | συμφώνησε | -εσε | μπόρεσε |
+| εμείς | -ήσαμε | συμφωνήσαμε | -έσαμε | μπορέσαμε |
+| εσείς | -ήσατε | συμφωνήσατε | -έσατε | μπορέσατε |
+| αυτοί | -ησαν | συμφώνησαν | -εσαν | μπόρεσαν |
+
+> **Stress moves back.** In the past the stress sits on the third syllable from the end, so it leaves the ending: συμφων**ώ** → συμφ**ώ**νησα. In εμείς and εσείς the form is longer, so it moves forward again: συμφων**ή**σαμε.
+
+## The verbs
+
+Each verb is shown with its past (εγώ) form.
+
+{{words}}
+`,
+
 z5:`
 # Z5 vocabulary
 
@@ -4616,7 +4674,7 @@ const LESSON_BLOCKS={
   words(a){
     let cards=DB[sec].words;
     if(a.only){ const need=a.only.split(','); cards=cards.filter(c=>need.every(t=>(c.tags||[]).includes(t))); }
-    const line=c=>`- **${c.gr}** — ${c.en}${stateDot(c)}`;
+    const line=c=>`- **${c.gr}**${typeof c.past==='string'?` · ${c.past}`:''} — ${c.en}${stateDot(c)}`;
     if(!a.group) return cards.map(line).join('\n');
     const buckets=new Map();
     cards.forEach(c=>{
