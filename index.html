@@ -5836,6 +5836,21 @@ $('fno').onclick=e=>{
 
 $('check').onclick=submit;
 $('typed').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();submit();}});
+/* Gboard on Android can drop focus from the answer box while it swaps layouts
+   (English → Greek), which hides the keyboard mid-switch. If focus leaves without
+   the user touching anything, put it straight back so the keyboard stays up. */
+let lastPointer=0;
+document.addEventListener('pointerdown',()=>{lastPointer=Date.now();},true);
+$('typed').addEventListener('blur',e=>{
+  if(e.relatedTarget || Date.now()-lastPointer<600) return;   // user moved on
+  setTimeout(()=>{
+    const a=document.activeElement;
+    if(a && a!==document.body) return;
+    if(!document.hasFocus() || mode!=='type' || phase==='resolved') return;
+    if($('entry').hidden || $('study').hidden) return;
+    $('typed').focus({preventScroll:true});
+  },0);
+});
 $('reveal').onclick=doReveal;
 $('next').onclick=()=>go(i+1);
 $('skip').onclick=()=>go(i+1);
